@@ -2,6 +2,7 @@ package core
 
 import "io"
 
+// Info struct. Minimal Information from a DXF File.
 type Info struct {
 	Release  string
 	Version  string
@@ -9,11 +10,12 @@ type Info struct {
 	Handseed string
 }
 
-type SetInfoDataFromTag func(Tag, *Info)
+type setInfoDataFromTag func(Tag, *Info)
 
-var infoTagMapper map[string]SetInfoDataFromTag
+var infoTagMapper map[string]setInfoDataFromTag
 
-func dxfInfo(stream io.Reader) (Info, error) {
+// GetDXFInfo returns an Info record extracted from the DXF at stream.
+func GetDXFInfo(stream io.Reader) (Info, error) {
 	info := Info{}
 	next := Tagger(stream)
 
@@ -55,7 +57,7 @@ var acadRelease = map[string]string{
 }
 
 func init() {
-	infoTagMapper = make(map[string]SetInfoDataFromTag)
+	infoTagMapper = make(map[string]setInfoDataFromTag)
 
 	infoTagMapper["DWGCODEPAGE"] = func(tag Tag, info *Info) {
 		value, _ := AsString(tag.Value)

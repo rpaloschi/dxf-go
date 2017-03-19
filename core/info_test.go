@@ -30,7 +30,7 @@ EOF
 `
 
 func TestDXFInfo(t *testing.T) {
-	info, _ := dxfInfo(strings.NewReader(dxfWithInfo))
+	info, _ := GetDXFInfo(strings.NewReader(dxfWithInfo))
 	assert.Equal(t, "R2004", info.Release)
 	assert.Equal(t, "AC1018", info.Version)
 	assert.Equal(t, "cp1252", info.Encoding)
