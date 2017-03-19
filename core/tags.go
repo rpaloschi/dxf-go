@@ -7,20 +7,29 @@ import (
 	"strings"
 )
 
+// Tag from a DXF file.
 type Tag struct {
 	Code  int
 	Value DataType
 }
 
-var noneString, _ = NewString("NONE")
-var NoneTag Tag = Tag{999999, noneString}
+// NoneTag a constant that represents a nul tag.
+var NoneTag = Tag{999999, &String{"NONE"}}
 
+// DataTypeFactory a factory function that receives a string and return an instance
+// of a DataType. The string should contain the DataType value.
 type DataTypeFactory func(string) (DataType, error)
 
+// GroupCodeTypes maps DXF group codes to DataTypeFactory functions. See the init
+// functions for the known group codes.
 var GroupCodeTypes map[int]DataTypeFactory
 
+// NextTagFunction is the prototype of a function that returns the next Tag in a stream.
 type NextTagFunction func() (*Tag, error)
 
+// Tagger function. Returns a NextTagFunction that, in turn, returns the tags
+// from the stream sequentially each time it is called. It finishes when it returns
+// an error or a NoneTag.
 func Tagger(stream io.Reader) NextTagFunction {
 	counter := 0
 	scanner := bufio.NewScanner(stream)
