@@ -16,13 +16,8 @@ type Tag struct {
 // NoneTag a constant that represents a nul tag.
 var NoneTag = Tag{999999, &String{"NONE"}}
 
-// dataTypeFactory a factory function that receives a string and return an instance
-// of a DataType. The string should contain the DataType value.
-type dataTypeFactory func(string) (DataType, error)
-
-// groupCodeTypes maps DXF group codes to DataTypeFactory functions. See the init
-// functions for the known group codes.
-var groupCodeTypes map[int]dataTypeFactory
+const APP_DATA_MARKER = 102
+const SUBCLASS_MARKER = 100
 
 // NextTagFunction is the prototype of a function that returns the next Tag in a stream.
 type NextTagFunction func() (*Tag, error)
@@ -72,6 +67,130 @@ func Tagger(stream io.Reader) NextTagFunction {
 		return &NoneTag, nil
 	}
 }
+
+// AllTags iterates until next finishes and returns all returned tags as a slice.
+func AllTags(next NextTagFunction) []*Tag {
+	tags := make([]*Tag, 0)
+
+	tag, _ := next()
+	for *tag != NoneTag {
+		tags = append(tags, tag)
+		tag, _ = next()
+	}
+
+	return tags
+}
+
+type TagSlice []*Tag
+
+func (slice TagSlice) TagIndex(tagCode int, startingIndex int, endIndex int) int {
+	for index := startingIndex; index < endIndex; index++ {
+		if slice[index].Code == tagCode {
+			return index
+		}
+	}
+	return -1
+}
+
+func (slice TagSlice) AllWithCode(tagCode int) []*Tag {
+	tags := make([]*Tag, 0)
+
+	for _, tag := range slice {
+		if tag.Code == tagCode {
+			tags = append(tags, tag)
+		}
+	}
+
+	return tags
+}
+
+func (slice TagSlice) RegularTags() []*Tag {
+	tags := make([]*Tag, 0)
+
+	inAppDataRange := false
+	for _, tag := range slice {
+		if tag.Code >= 1000 {
+			continue
+		}
+
+		if tag.Code == APP_DATA_MARKER {
+			if inAppDataRange {
+				inAppDataRange = false
+			} else {
+				inAppDataRange = true
+			}
+			continue
+		}
+
+		if !inAppDataRange {
+			tags = append(tags, tag)
+		}
+	}
+
+	return tags
+}
+
+func (slice TagSlice) XDataTags() []*Tag {
+	tags := make([]*Tag, 0)
+
+	for _, tag := range slice {
+		if tag.Code > 999 {
+			tags = append(tags, tag)
+		}
+	}
+
+	return tags
+}
+
+func (slice TagSlice) AppDataTags() map[string][]*Tag {
+	appData := make(map[string][]*Tag)
+	appTags := make([]*Tag, 0)
+
+	for _, tag := range slice {
+		if tag.Code == APP_DATA_MARKER {
+			if tag.Value.ToString() == "}" {
+				appTags = append(appTags, tag)
+				appData[appTags[0].Value.ToString()] = appTags
+				appTags = appTags[:0]
+			} else {
+				appTags = appTags[:0]
+				appTags = append(appTags, tag)
+			}
+		} else {
+			if len(appTags) > 0 {
+				appTags = append(appTags, tag)
+			}
+		}
+	}
+
+	return appData
+}
+
+func (slice TagSlice) SubclassesTags() map[string][]*Tag {
+	classes := make(map[string][]*Tag)
+	tags := make([]*Tag, 0)
+	name := "noname"
+
+	for _, tag := range slice.RegularTags() {
+		if tag.Code == SUBCLASS_MARKER {
+			classes[name] = tags
+			tags = tags[:0]
+			name = tag.Value.ToString()
+		} else {
+			tags = append(tags, tag)
+		}
+	}
+	classes[name] = tags
+	return classes
+}
+
+// dataTypeFactory a factory function that receives a string and return an instance
+// of a DataType. The string should contain the DataType value.
+type dataTypeFactory func(string) (DataType, error)
+
+// groupCodeTypes maps DXF group codes to DataTypeFactory functions. See the init
+// functions for the known group codes.
+var groupCodeTypes map[int]dataTypeFactory
 
 func init() {
 	groupCodeTypes = make(map[int]dataTypeFactory)
