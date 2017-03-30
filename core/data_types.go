@@ -26,6 +26,7 @@ func NewString(value string) (DataType, error) {
 	return returnValue, nil
 }
 
+// NewStringValue creates a new String object with provided string.
 func NewStringValue(value string) *String {
 	returnValue := new(String)
 	returnValue.value = value
@@ -55,6 +56,7 @@ func NewInteger(value string) (DataType, error) {
 	return returnValue, err
 }
 
+// NewIntegerValue creates a new Integer object with provided int.
 func NewIntegerValue(value int) *Integer {
 	returnValue := new(Integer)
 	returnValue.value = value
@@ -84,6 +86,7 @@ func NewFloat(value string) (DataType, error) {
 	return returnValue, err
 }
 
+// NewFloatValue creates a new Float object with provided float64.
 func NewFloatValue(value float64) *Float {
 	returnValue := new(Float)
 	returnValue.value = value
