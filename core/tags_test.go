@@ -132,42 +132,42 @@ AcDbEllipse
 `
 
 var expectedRegularDxfTags = []*Tag{
-	&Tag{Code: 0, Value: &String{"SECTION"}},
-	&Tag{Code: 2, Value: &String{"HEADER"}},
-	&Tag{Code: 9, Value: &String{"$ACADVER"}},
-	&Tag{Code: 1, Value: &String{"AC1018"}},
-	&Tag{Code: 9, Value: &String{"$DWGCODEPAGE"}},
-	&Tag{Code: 3, Value: &String{"ANSI_1252"}},
-	&Tag{Code: 0, Value: &String{"ENDSEC"}},
-	&Tag{Code: 0, Value: &String{"EOF"}},
+	NewTag(0, NewStringValue("SECTION")),
+	NewTag(2, NewStringValue("HEADER")),
+	NewTag(9, NewStringValue("$ACADVER")),
+	NewTag(1, NewStringValue("AC1018")),
+	NewTag(9, NewStringValue("$DWGCODEPAGE")),
+	NewTag(3, NewStringValue("ANSI_1252")),
+	NewTag(0, NewStringValue("ENDSEC")),
+	NewTag(0, NewStringValue("EOF")),
 }
 
 func TestTagEquality(t *testing.T) {
-	str1, _ := NewString("TEST")
-	str2, _ := NewString("STRING")
-	int1, _ := NewInteger("1001")
-	int2, _ := NewInteger("9")
-	float1, _ := NewFloat("10.01")
-	float2, _ := NewFloat("0.33")
+	str1 := NewStringValue("TEST")
+	str2 := NewStringValue("STRING")
+	int1 := NewIntegerValue(1001)
+	int2 := NewIntegerValue(9)
+	float1 := NewFloatValue(10.01)
+	float2 := NewFloatValue(0.33)
 
-	assert.Equal(t, &Tag{Code: 1, Value: str1}, &Tag{Code: 1, Value: str1})
-	assert.Equal(t, &Tag{Code: 2, Value: int1}, &Tag{Code: 2, Value: int1})
-	assert.Equal(t, &Tag{Code: 3, Value: float1}, &Tag{Code: 3, Value: float1})
+	assert.Equal(t, NewTag(1, str1), NewTag(1, str1))
+	assert.Equal(t, NewTag(2, int1), NewTag(2, int1))
+	assert.Equal(t, NewTag(3, float1), NewTag(3, float1))
 
-	assert.NotEqual(t, &Tag{Code: 1, Value: str1}, &Tag{Code: 1, Value: str2})
-	assert.NotEqual(t, &Tag{Code: 0, Value: str1}, &Tag{Code: 1, Value: str1})
-	assert.NotEqual(t, &Tag{Code: 0, Value: str1}, &Tag{Code: 0, Value: int1})
-	assert.NotEqual(t, &Tag{Code: 0, Value: str1}, &Tag{Code: 0, Value: float1})
+	assert.NotEqual(t, NewTag(1, str1), NewTag(1, str2))
+	assert.NotEqual(t, NewTag(0, str1), NewTag(1, str1))
+	assert.NotEqual(t, NewTag(0, str1), NewTag(0, int1))
+	assert.NotEqual(t, NewTag(0, str1), NewTag(0, float1))
 
-	assert.NotEqual(t, &Tag{Code: 1, Value: int1}, &Tag{Code: 1, Value: int2})
-	assert.NotEqual(t, &Tag{Code: 0, Value: int1}, &Tag{Code: 1, Value: int1})
-	assert.NotEqual(t, &Tag{Code: 0, Value: int1}, &Tag{Code: 0, Value: str1})
-	assert.NotEqual(t, &Tag{Code: 0, Value: int1}, &Tag{Code: 0, Value: float1})
+	assert.NotEqual(t, NewTag(1, int1), NewTag(1, int2))
+	assert.NotEqual(t, NewTag(0, int1), NewTag(1, int1))
+	assert.NotEqual(t, NewTag(0, int1), NewTag(0, str1))
+	assert.NotEqual(t, NewTag(0, int1), NewTag(0, float1))
 
-	assert.NotEqual(t, &Tag{Code: 1, Value: float1}, &Tag{Code: 1, Value: float2})
-	assert.NotEqual(t, &Tag{Code: 0, Value: float1}, &Tag{Code: 1, Value: float1})
-	assert.NotEqual(t, &Tag{Code: 0, Value: float1}, &Tag{Code: 0, Value: str1})
-	assert.NotEqual(t, &Tag{Code: 0, Value: float1}, &Tag{Code: 0, Value: int1})
+	assert.NotEqual(t, NewTag(1, float1), NewTag(1, float2))
+	assert.NotEqual(t, NewTag(0, float1), NewTag(1, float1))
+	assert.NotEqual(t, NewTag(0, float1), NewTag(0, str1))
+	assert.NotEqual(t, NewTag(0, float1), NewTag(0, int1))
 }
 
 type TaggerTestSuite struct {
@@ -203,13 +203,13 @@ func (suite *TaggerTestSuite) TestAllTagsWithoutEof() {
 	next := Tagger(strings.NewReader(noEOFDXF))
 
 	expected := []*Tag{
-		&Tag{Code: 0, Value: &String{"SECTION"}},
-		&Tag{Code: 2, Value: &String{"HEADER"}},
-		&Tag{Code: 9, Value: &String{"$ACADVER"}},
-		&Tag{Code: 1, Value: &String{"AC1018"}},
-		&Tag{Code: 9, Value: &String{"$DWGCODEPAGE"}},
-		&Tag{Code: 3, Value: &String{"ANSI_1252"}},
-		&Tag{Code: 0, Value: &String{"ENDSEC"}},
+		NewTag(0, NewStringValue("SECTION")),
+		NewTag(2, NewStringValue("HEADER")),
+		NewTag(9, NewStringValue("$ACADVER")),
+		NewTag(1, NewStringValue("AC1018")),
+		NewTag(9, NewStringValue("$DWGCODEPAGE")),
+		NewTag(3, NewStringValue("ANSI_1252")),
+		NewTag(0, NewStringValue("ENDSEC")),
 	}
 
 	suite.Equal(expected, AllTags(next))
@@ -219,16 +219,16 @@ func (suite *TaggerTestSuite) TestDXFWithComments() {
 	next := Tagger(strings.NewReader(regularDXFComments))
 
 	expected := []*Tag{
-		&Tag{Code: 999, Value: &String{"Comment0"}},
-		&Tag{Code: 0, Value: &String{"SECTION"}},
-		&Tag{Code: 2, Value: &String{"HEADER"}},
-		&Tag{Code: 9, Value: &String{"$ACADVER"}},
-		&Tag{Code: 999, Value: &String{"Comment1"}},
-		&Tag{Code: 1, Value: &String{"AC1018"}},
-		&Tag{Code: 9, Value: &String{"$DWGCODEPAGE"}},
-		&Tag{Code: 3, Value: &String{"ANSI_1252"}},
-		&Tag{Code: 0, Value: &String{"ENDSEC"}},
-		&Tag{Code: 0, Value: &String{"EOF"}},
+		NewTag(999, NewStringValue("Comment0")),
+		NewTag(0, NewStringValue("SECTION")),
+		NewTag(2, NewStringValue("HEADER")),
+		NewTag(9, NewStringValue("$ACADVER")),
+		NewTag(999, NewStringValue("Comment1")),
+		NewTag(1, NewStringValue("AC1018")),
+		NewTag(9, NewStringValue("$DWGCODEPAGE")),
+		NewTag(3, NewStringValue("ANSI_1252")),
+		NewTag(0, NewStringValue("ENDSEC")),
+		NewTag(0, NewStringValue("EOF")),
 	}
 
 	suite.Equal(expected, AllTags(next))
@@ -239,8 +239,8 @@ func (suite *TaggerTestSuite) TestIntAndFloatTags() {
 	next := Tagger(strings.NewReader(intAndFloatTags))
 
 	expected := []*Tag{
-		&Tag{Code: 60, Value: &Integer{1001}},
-		&Tag{Code: 20, Value: &Float{15.54}},
+		NewTag(60, NewIntegerValue(1001)),
+		NewTag(20, NewFloatValue(15.54)),
 	}
 
 	suite.Equal(expected, AllTags(next))
@@ -274,9 +274,9 @@ func (suite *TagSliceTestSuite) TestInexistentTagIndex() {
 
 func (suite *TagSliceTestSuite) TestAllWithCode() {
 	expected := []*Tag{
-		&Tag{Code: 0, Value: &String{value: "SECTION"}},
-		&Tag{Code: 0, Value: &String{value: "ENDSEC"}},
-		&Tag{Code: 0, Value: &String{value: "EOF"}},
+		NewTag(0, NewStringValue("SECTION")),
+		NewTag(0, NewStringValue("ENDSEC")),
+		NewTag(0, NewStringValue("EOF")),
 	}
 	suite.Equal(expected, suite.tags.AllWithCode(0))
 	suite.Equal([]*Tag{}, suite.tags.AllWithCode(50))
@@ -294,8 +294,8 @@ func (suite *TagSliceTestSuite) TestXDataTags() {
 	tags := TagSlice(AllTags(next))
 
 	expected := []*Tag{
-		&Tag{Code: 1001, Value: &String{value: "DXFGRABBER"}},
-		&Tag{Code: 1000, Value: &String{value: "XDATA_STRING"}},
+		NewTag(1001, NewStringValue("DXFGRABBER")),
+		NewTag(1000, NewStringValue("XDATA_STRING")),
 	}
 
 	suite.Equal(expected, tags.XDataTags())
@@ -306,9 +306,9 @@ func (suite *TagSliceTestSuite) TestAppDataTags() {
 	tags := TagSlice(AllTags(next))
 
 	expected := []*Tag{
-		&Tag{Code: 102, Value: &String{value: "{DXFGrabber"}},
-		&Tag{Code: 330, Value: &String{value: "999"}},
-		&Tag{Code: 102, Value: &String{value: "}"}},
+		NewTag(102, NewStringValue("{DXFGrabber")),
+		NewTag(330, NewStringValue("999")),
+		NewTag(102, NewStringValue("}")),
 	}
 	appData := tags.AppDataTags()
 
@@ -337,13 +337,14 @@ func TestTagGroups(t *testing.T) {
 	groups := TagGroups(tags[2:len(tags)-2], 9)
 
 	expected := []TagSlice{
-		TagSlice{
+		{
 			NewTag(9, NewStringValue("$ACADVER")),
-			NewTag(1, NewStringValue("AC1018"))},
-
-		TagSlice{
+			NewTag(1, NewStringValue("AC1018")),
+		},
+		{
 			NewTag(9, NewStringValue("$DWGCODEPAGE")),
-			NewTag(3, NewStringValue("ANSI_1252"))},
+			NewTag(3, NewStringValue("ANSI_1252")),
+		},
 	}
 
 	assert.EqualValues(t, expected, groups)
