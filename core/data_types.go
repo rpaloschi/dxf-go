@@ -26,6 +26,12 @@ func NewString(value string) (DataType, error) {
 	return returnValue, nil
 }
 
+func NewStringValue(value string) *String {
+	returnValue := new(String)
+	returnValue.value = value
+	return returnValue
+}
+
 // ToString returns a string representation of the value
 func (s String) ToString() string {
 	return s.value
@@ -49,6 +55,12 @@ func NewInteger(value string) (DataType, error) {
 	return returnValue, err
 }
 
+func NewIntegerValue(value int) *Integer {
+	returnValue := new(Integer)
+	returnValue.value = value
+	return returnValue
+}
+
 // ToString returns a string representation of the value
 func (i Integer) ToString() string {
 	return strconv.Itoa(i.value)
@@ -70,6 +82,12 @@ func NewFloat(value string) (DataType, error) {
 	v, err := strconv.ParseFloat(value, 64)
 	returnValue.value = v
 	return returnValue, err
+}
+
+func NewFloatValue(value float64) *Float {
+	returnValue := new(Float)
+	returnValue.value = value
+	return returnValue
 }
 
 // ToString returns a string representation of the value

@@ -13,6 +13,13 @@ type Tag struct {
 	Value DataType
 }
 
+func NewTag(code int, value DataType) *Tag {
+	tag := new(Tag)
+	tag.Code = code
+	tag.Value = value
+	return tag
+}
+
 // NoneTag a constant that represents a nul tag.
 var NoneTag = Tag{999999, &String{"NONE"}}
 
@@ -182,6 +189,29 @@ func (slice TagSlice) SubclassesTags() map[string][]*Tag {
 	}
 	classes[name] = tags
 	return classes
+}
+
+func TagGroups(tags TagSlice, splitCode int) []TagSlice {
+	groups := make([]TagSlice, 0)
+
+	group := make(TagSlice, 0)
+	for _, tag := range tags {
+		if tag.Code == splitCode {
+			if len(group) > 0 {
+				groups = append(groups, group)
+			}
+			group = make(TagSlice, 0)
+			group = append(group, tag)
+		} else {
+			group = append(group, tag)
+		}
+	}
+
+	if len(group) > 0 && group[0].Code == splitCode {
+		groups = append(groups, group)
+	}
+
+	return groups
 }
 
 // dataTypeFactory a factory function that receives a string and return an instance

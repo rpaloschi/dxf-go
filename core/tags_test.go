@@ -329,3 +329,22 @@ func (suite *TagSliceTestSuite) TestSubclassesTags() {
 func TestTagSliceTestSuite(t *testing.T) {
 	suite.Run(t, new(TagSliceTestSuite))
 }
+
+func TestTagGroups(t *testing.T) {
+	next := Tagger(strings.NewReader(regularDXF))
+	tags := TagSlice(AllTags(next))
+
+	groups := TagGroups(tags[2:len(tags)-2], 9)
+
+	expected := []TagSlice{
+		TagSlice{
+			NewTag(9, NewStringValue("$ACADVER")),
+			NewTag(1, NewStringValue("AC1018"))},
+
+		TagSlice{
+			NewTag(9, NewStringValue("$DWGCODEPAGE")),
+			NewTag(3, NewStringValue("ANSI_1252"))},
+	}
+
+	assert.EqualValues(t, expected, groups)
+}
