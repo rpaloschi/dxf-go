@@ -13,6 +13,7 @@ type Tag struct {
 	Value DataType
 }
 
+// NewTag creates a new Tag with code and value
 func NewTag(code int, value DataType) *Tag {
 	tag := new(Tag)
 	tag.Code = code
@@ -24,6 +25,7 @@ func NewTag(code int, value DataType) *Tag {
 var NoneTag = Tag{999999, &String{"NONE"}}
 
 const APP_DATA_MARKER = 102
+
 const SUBCLASS_MARKER = 100
 
 // NextTagFunction is the prototype of a function that returns the next Tag in a stream.
@@ -88,8 +90,12 @@ func AllTags(next NextTagFunction) []*Tag {
 	return tags
 }
 
+// TagSlice a slice specialization for tag pointers.
 type TagSlice []*Tag
 
+// TagIndex returns the index of the first occurrence of a tag with tagCode between
+// the interval [startingIndex, endIndex).
+// If no tag is found, it returns -1
 func (slice TagSlice) TagIndex(tagCode int, startingIndex int, endIndex int) int {
 	for index := startingIndex; index < endIndex; index++ {
 		if slice[index].Code == tagCode {
@@ -99,6 +105,7 @@ func (slice TagSlice) TagIndex(tagCode int, startingIndex int, endIndex int) int
 	return -1
 }
 
+// AllWithCode returns a slice of tags that have the code tagCode.
 func (slice TagSlice) AllWithCode(tagCode int) []*Tag {
 	tags := make([]*Tag, 0)
 
@@ -111,6 +118,8 @@ func (slice TagSlice) AllWithCode(tagCode int) []*Tag {
 	return tags
 }
 
+// RegularTags returns a slice of Tags. It will return all tags
+// that are not XDATA, APP_DATA or SUBCLASS.
 func (slice TagSlice) RegularTags() []*Tag {
 	tags := make([]*Tag, 0)
 
@@ -137,6 +146,7 @@ func (slice TagSlice) RegularTags() []*Tag {
 	return tags
 }
 
+// XDataTags returns a slice of Tags that contains code >= 1000.
 func (slice TagSlice) XDataTags() []*Tag {
 	tags := make([]*Tag, 0)
 
@@ -149,6 +159,7 @@ func (slice TagSlice) XDataTags() []*Tag {
 	return tags
 }
 
+// AppDataTags returns a slice of tags containing all App Data Tags.
 func (slice TagSlice) AppDataTags() map[string][]*Tag {
 	appData := make(map[string][]*Tag)
 	appTags := make([]*Tag, 0)
@@ -173,6 +184,7 @@ func (slice TagSlice) AppDataTags() map[string][]*Tag {
 	return appData
 }
 
+// SubclassesTags returns a slice of tags containing all Subclass Tags.
 func (slice TagSlice) SubclassesTags() map[string][]*Tag {
 	classes := make(map[string][]*Tag)
 	tags := make([]*Tag, 0)
@@ -191,6 +203,9 @@ func (slice TagSlice) SubclassesTags() map[string][]*Tag {
 	return classes
 }
 
+// TagGroups splits a TagSlice into Groups of TagSlices starting with a Split Tag
+// and ending before the next Split Tag.
+// A Split Tag is a tag with Code == splitCode, like (0, 'SECTION') for splitCode = 0.
 func TagGroups(tags TagSlice, splitCode int) []TagSlice {
 	groups := make([]TagSlice, 0)
 
