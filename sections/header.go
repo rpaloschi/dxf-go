@@ -2,13 +2,15 @@ package sections
 
 import "github.com/rpaloschi/dxf-go/core"
 
-const TAG_ACADVER = "$ACADVER"
-const TAG_DWGCODEPAGE = "$DWGCODEPAGE"
+const tagACADVER = "$ACADVER"
+const tagDWGCODEPAGE = "$DWGCODEPAGE"
 
+// HeaderSection representation.
 type HeaderSection struct {
 	values map[string][]*core.Tag
 }
 
+// NewHeaderSection creates a new *HeaderSection from a core.TagSlice.
 func NewHeaderSection(tags core.TagSlice) *HeaderSection {
 	header := new(HeaderSection)
 	header.values = make(map[string][]*core.Tag)
@@ -31,13 +33,13 @@ func NewHeaderSection(tags core.TagSlice) *HeaderSection {
 	}
 
 	// default values
-	if _, ok := header.values[TAG_ACADVER]; !ok {
-		header.values[TAG_ACADVER] = []*core.Tag{
+	if _, ok := header.values[tagACADVER]; !ok {
+		header.values[tagACADVER] = []*core.Tag{
 			core.NewTag(1, core.NewStringValue("AC1009")),
 		}
 	}
-	if _, ok := header.values[TAG_DWGCODEPAGE]; !ok {
-		header.values[TAG_DWGCODEPAGE] = []*core.Tag{
+	if _, ok := header.values[tagDWGCODEPAGE]; !ok {
+		header.values[tagDWGCODEPAGE] = []*core.Tag{
 			core.NewTag(3, core.NewStringValue("ANSI_1252")),
 		}
 	}
@@ -45,6 +47,7 @@ func NewHeaderSection(tags core.TagSlice) *HeaderSection {
 	return header
 }
 
+// Get a slice of core.Tags by its key on the HeaderSection.
 func (section *HeaderSection) Get(key string) []*core.Tag {
 	if keyTags, ok := section.values[key]; ok {
 		return keyTags

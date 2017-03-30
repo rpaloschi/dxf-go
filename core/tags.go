@@ -24,9 +24,8 @@ func NewTag(code int, value DataType) *Tag {
 // NoneTag a constant that represents a nul tag.
 var NoneTag = Tag{999999, &String{"NONE"}}
 
-const APP_DATA_MARKER = 102
-
-const SUBCLASS_MARKER = 100
+const appDataMarker = 102
+const subclassMarker = 100
 
 // NextTagFunction is the prototype of a function that returns the next Tag in a stream.
 type NextTagFunction func() (*Tag, error)
@@ -129,7 +128,7 @@ func (slice TagSlice) RegularTags() []*Tag {
 			continue
 		}
 
-		if tag.Code == APP_DATA_MARKER {
+		if tag.Code == appDataMarker {
 			if inAppDataRange {
 				inAppDataRange = false
 			} else {
@@ -165,7 +164,7 @@ func (slice TagSlice) AppDataTags() map[string][]*Tag {
 	appTags := make([]*Tag, 0)
 
 	for _, tag := range slice {
-		if tag.Code == APP_DATA_MARKER {
+		if tag.Code == appDataMarker {
 			if tag.Value.ToString() == "}" {
 				appTags = append(appTags, tag)
 				appData[appTags[0].Value.ToString()] = appTags
@@ -191,7 +190,7 @@ func (slice TagSlice) SubclassesTags() map[string][]*Tag {
 	name := "noname"
 
 	for _, tag := range slice.RegularTags() {
-		if tag.Code == SUBCLASS_MARKER {
+		if tag.Code == subclassMarker {
 			classes[name] = tags
 			tags = tags[:0]
 			name = tag.Value.ToString()
