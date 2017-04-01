@@ -2,6 +2,7 @@ package core
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"strconv"
 	"strings"
@@ -11,6 +12,10 @@ import (
 type Tag struct {
 	Code  int
 	Value DataType
+}
+
+func (tag Tag) ToString() string {
+	return fmt.Sprintf("{ Code: %v; Value: %v }", tag.Code, tag.Value.ToString())
 }
 
 // NewTag creates a new Tag with code and value
