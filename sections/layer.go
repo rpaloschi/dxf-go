@@ -19,53 +19,41 @@ type Layer struct {
 }
 
 // NewLayer builds a new Layer from a tag slice.
-func NewLayer(tags core.TagSlice) (*Layer, error) {
+func NewLayer(tags core.TagSlice) *Layer {
 	layer := new(Layer)
 
 	layer.On = true
 	layer.Color = 7
 
-	for _, tag := range tags {
+	for _, tag := range tags.RegularTags() {
 		switch tag.Code {
 		case 2:
-			if name, ok := core.AsString(tag.Value); ok {
-				layer.Name = name
-			} else {
-				return nil, fmt.Errorf("Error converting layer name tag: %v", tag.ToString())
-			}
-
+			layer.Name, _ = core.AsString(tag.Value)
 		case 70:
-			if flags, ok := core.AsInt(tag.Value); ok {
-				layer.Frozen = flags&frozenBit != 0
-				layer.Locked = flags&lockBit != 0
-			} else {
-				return nil, fmt.Errorf("Error converting layer flags tag: %v", tag.ToString())
-			}
+			flags, _ := core.AsInt(tag.Value)
+			layer.Frozen = flags&frozenBit != 0
+			layer.Locked = flags&lockBit != 0
 
 		case 62:
-			if color, ok := core.AsInt(tag.Value); ok {
-				if color < 0 {
-					layer.On = false
-					layer.Color = -color
-				} else {
-					layer.Color = color
-				}
+			color, _ := core.AsInt(tag.Value)
+			if color < 0 {
+				layer.On = false
+				layer.Color = -color
 			} else {
-				return nil, fmt.Errorf("Error converting layer color tag: %v", tag.ToString())
+				layer.Color = color
 			}
 
 		case 6:
-			if lineType, ok := core.AsString(tag.Value); ok {
-				layer.LineType = lineType
-			} else {
-				return nil, fmt.Errorf("Error converting layer Line Type tag: %v",
-					tag.ToString())
-			}
+			layer.LineType, _ = core.AsString(tag.Value)
 
 		default:
 			fmt.Printf("Discarding tag for Layer: %+v\n", tag.ToString())
 		}
 	}
 
-	return layer, nil
+	return layer
 }
+
+// TODO:
+// 290 Plotting flag. If set to 0, do not plot this layer
+// 370 Lineweight enum value
