@@ -11,6 +11,7 @@ const shapeBit = 0x1
 const backwardsBit = 0x2
 const upsideDownBit = 0x4
 
+// Style Table representation
 type Style struct {
 	Name           string
 	Height         float64
@@ -24,6 +25,7 @@ type Style struct {
 	BigFont        string
 }
 
+// NewStyle creates a new Style object from a slice of tags.
 func NewStyle(tags core.TagSlice) *Style {
 	style := new(Style)
 

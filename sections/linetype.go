@@ -9,6 +9,7 @@ const absRotationBit = 0x1
 const textStringBit = 0x2
 const elementShapeBit = 0x4
 
+// LineElement represents a single element in a LineType.
 type LineElement struct {
 	Length           float64
 	AbsoluteRotation bool
@@ -22,6 +23,7 @@ type LineElement struct {
 	Text             string
 }
 
+// LineType representation
 type LineType struct {
 	Name        string
 	Description string
@@ -29,6 +31,7 @@ type LineType struct {
 	Pattern     []*LineElement
 }
 
+// NewLineType creates a new LineType object from a slice of tags.
 func NewLineType(tags core.TagSlice) *LineType {
 	ltype := new(LineType)
 	ltype.Pattern = make([]*LineElement, 0)
