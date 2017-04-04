@@ -17,3 +17,25 @@ func TableEntryTags(tags core.TagSlice) ([]core.TagSlice, error) {
 
 	return groups[1:lastIndex], nil
 }
+
+func SplitTagChunks(tags core.TagSlice, stopTag core.Tag, chunkDelimiter core.Tag) []core.TagSlice {
+	chunks := make([]core.TagSlice, 0)
+
+	tagIndex := 0
+	for {
+		if *tags[tagIndex] == stopTag {
+			break
+		}
+
+		chunk := make([]*core.Tag, 1)
+		chunk[0] = tags[tagIndex]
+
+		for ; *tags[tagIndex] != chunkDelimiter; tagIndex++ {
+			chunk = append(chunk, tags[tagIndex])
+		}
+
+		chunks = append(chunks, chunk)
+	}
+
+	return chunks
+}

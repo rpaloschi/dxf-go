@@ -101,3 +101,19 @@ func NewLineType(tags core.TagSlice) *LineType {
 
 	return ltype
 }
+
+func NewLineTypeTable(tags core.TagSlice) (map[string]*LineType, error) {
+	table := make(map[string]*LineType)
+
+	tableSlices, err := TableEntryTags(tags)
+	if err != nil {
+		return table, err
+	}
+
+	for _, slice := range tableSlices {
+		ltype := NewLineType(slice)
+		table[ltype.Name] = ltype
+	}
+
+	return table, nil
+}

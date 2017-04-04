@@ -54,6 +54,22 @@ func NewLayer(tags core.TagSlice) *Layer {
 	return layer
 }
 
+func NewLayerTable(tags core.TagSlice) (map[string]*Layer, error) {
+	table := make(map[string]*Layer)
+
+	tableSlices, err := TableEntryTags(tags)
+	if err != nil {
+		return table, err
+	}
+
+	for _, slice := range tableSlices {
+		layer := NewLayer(slice)
+		table[layer.Name] = layer
+	}
+
+	return table, nil
+}
+
 // TODO:
 // 290 Plotting flag. If set to 0, do not plot this layer
 // 370 Lineweight enum value

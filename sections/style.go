@@ -69,3 +69,19 @@ func NewStyle(tags core.TagSlice) *Style {
 
 	return style
 }
+
+func NewStyleTable(tags core.TagSlice) (map[string]*Style, error) {
+	table := make(map[string]*Style)
+
+	tableSlices, err := TableEntryTags(tags)
+	if err != nil {
+		return table, err
+	}
+
+	for _, slice := range tableSlices {
+		style := NewStyle(slice)
+		table[style.Name] = style
+	}
+
+	return table, nil
+}
