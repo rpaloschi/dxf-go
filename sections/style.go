@@ -70,6 +70,8 @@ func NewStyle(tags core.TagSlice) *Style {
 	return style
 }
 
+// NewStyleTable parses the slice of tags into a table that maps the Style name to
+// the parsed Style object.
 func NewStyleTable(tags core.TagSlice) (map[string]*Style, error) {
 	table := make(map[string]*Style)
 
