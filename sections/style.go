@@ -1,7 +1,6 @@
 package sections
 
 import (
-	"fmt"
 	"github.com/rpaloschi/dxf-go/core"
 )
 
@@ -13,6 +12,7 @@ const upsideDownBit = 0x4
 
 // Style Table representation
 type Style struct {
+	core.DxfElement
 	Name           string
 	Height         float64
 	Width          float64
@@ -26,48 +26,31 @@ type Style struct {
 }
 
 // NewStyle creates a new Style object from a slice of tags.
-func NewStyle(tags core.TagSlice) *Style {
+func NewStyle(tags core.TagSlice) (*Style, error) {
 	style := new(Style)
 
 	style.Height = 1.0
 	style.Width = 1.0
 
-	for _, tag := range tags.RegularTags() {
-		switch tag.Code {
-		case 2:
-			style.Name, _ = core.AsString(tag.Value)
-
-		case 3:
-			style.Font, _ = core.AsString(tag.Value)
-
-		case 4:
-			style.BigFont, _ = core.AsString(tag.Value)
-
-		case 40:
-			style.Height, _ = core.AsFloat(tag.Value)
-
-		case 41:
-			style.Width, _ = core.AsFloat(tag.Value)
-
-		case 50:
-			style.Oblique, _ = core.AsFloat(tag.Value)
-
-		case 70:
-			flags, _ := core.AsInt(tag.Value)
+	style.Init(map[int]core.TypeParser{
+		2:  core.NewStringTypeParserToVar(&style.Name),
+		3:  core.NewStringTypeParserToVar(&style.Font),
+		4:  core.NewStringTypeParserToVar(&style.BigFont),
+		40: core.NewFloatTypeParserToVar(&style.Height),
+		41: core.NewFloatTypeParserToVar(&style.Width),
+		50: core.NewFloatTypeParserToVar(&style.Oblique),
+		70: core.NewIntTypeParser(func(flags int) {
 			style.IsShape = flags&shapeBit != 0
 			style.IsVerticalText = flags&verticalTextBit != 0
-
-		case 71:
-			flags, _ := core.AsInt(tag.Value)
+		}),
+		71: core.NewIntTypeParser(func(flags int) {
 			style.IsBackwards = flags&backwardsBit != 0
 			style.IsUpsideDown = flags&upsideDownBit != 0
+		}),
+	})
 
-		default:
-			fmt.Printf("Discarding tag for Style: %+v\n", tag.ToString())
-		}
-	}
-
-	return style
+	err := style.Parse(tags)
+	return style, err
 }
 
 // NewStyleTable parses the slice of tags into a table that maps the Style name to
@@ -81,7 +64,10 @@ func NewStyleTable(tags core.TagSlice) (map[string]*Style, error) {
 	}
 
 	for _, slice := range tableSlices {
-		style := NewStyle(slice)
+		style, err := NewStyle(slice)
+		if err != nil {
+			return nil, err
+		}
 		table[style.Name] = style
 	}
 

@@ -1,7 +1,6 @@
 package sections
 
 import (
-	"fmt"
 	"github.com/rpaloschi/dxf-go/core"
 )
 
@@ -10,6 +9,7 @@ const frozenBit = 0x1
 
 // Layer representation.
 type Layer struct {
+	core.DxfElement
 	Name     string
 	Color    int
 	LineType string
@@ -19,39 +19,31 @@ type Layer struct {
 }
 
 // NewLayer builds a new Layer from a tag slice.
-func NewLayer(tags core.TagSlice) *Layer {
+func NewLayer(tags core.TagSlice) (*Layer, error) {
 	layer := new(Layer)
 
 	layer.On = true
 	layer.Color = 7
 
-	for _, tag := range tags.RegularTags() {
-		switch tag.Code {
-		case 2:
-			layer.Name, _ = core.AsString(tag.Value)
-		case 70:
-			flags, _ := core.AsInt(tag.Value)
+	layer.Init(map[int]core.TypeParser{
+		2: core.NewStringTypeParserToVar(&layer.Name),
+		70: core.NewIntTypeParser(func(flags int) {
 			layer.Frozen = flags&frozenBit != 0
 			layer.Locked = flags&lockBit != 0
-
-		case 62:
-			color, _ := core.AsInt(tag.Value)
+		}),
+		62: core.NewIntTypeParser(func(color int) {
 			if color < 0 {
 				layer.On = false
 				layer.Color = -color
 			} else {
 				layer.Color = color
 			}
+		}),
+		6: core.NewStringTypeParserToVar(&layer.LineType),
+	})
 
-		case 6:
-			layer.LineType, _ = core.AsString(tag.Value)
-
-		default:
-			fmt.Printf("Discarding tag for Layer: %+v\n", tag.ToString())
-		}
-	}
-
-	return layer
+	err := layer.Parse(tags)
+	return layer, err
 }
 
 // NewLayerTable parses the slice of tags into a table that maps the layer name to
@@ -65,7 +57,10 @@ func NewLayerTable(tags core.TagSlice) (map[string]*Layer, error) {
 	}
 
 	for _, slice := range tableSlices {
-		layer := NewLayer(slice)
+		layer, err := NewLayer(slice)
+		if err != nil {
+			return nil, err
+		}
 		table[layer.Name] = layer
 	}
 

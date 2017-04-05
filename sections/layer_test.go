@@ -21,8 +21,9 @@ func TestLayer(t *testing.T) {
 	next := core.Tagger(strings.NewReader(dxfLayer))
 	tags := core.TagSlice(core.AllTags(next))
 
-	layer := NewLayer(tags)
+	layer, err := NewLayer(tags)
 
+	assert.Nil(t, err)
 	assert.Equal(t, "VIEW_PORT", layer.Name)
 	assert.True(t, layer.Locked)
 	assert.True(t, layer.Frozen)
@@ -35,8 +36,9 @@ func TestLayerDefaultValues(t *testing.T) {
 	next := core.Tagger(strings.NewReader(""))
 	tags := core.TagSlice(core.AllTags(next))
 
-	layer := NewLayer(tags)
+	layer, err := NewLayer(tags)
 
+	assert.Nil(t, err)
 	assert.Equal(t, "", layer.Name)
 	assert.False(t, layer.Locked)
 	assert.False(t, layer.Frozen)
@@ -49,7 +51,7 @@ func TestLockedLayer(t *testing.T) {
 	next := core.Tagger(strings.NewReader("  70\n4"))
 	tags := core.TagSlice(core.AllTags(next))
 
-	layer := NewLayer(tags)
+	layer, _ := NewLayer(tags)
 
 	assert.True(t, layer.Locked)
 }
@@ -58,7 +60,7 @@ func TestFrozenLayer(t *testing.T) {
 	next := core.Tagger(strings.NewReader("  70\n1"))
 	tags := core.TagSlice(core.AllTags(next))
 
-	layer := NewLayer(tags)
+	layer, _ := NewLayer(tags)
 
 	assert.True(t, layer.Frozen)
 }
@@ -67,7 +69,7 @@ func TestOffLayer(t *testing.T) {
 	next := core.Tagger(strings.NewReader("  62\n-4"))
 	tags := core.TagSlice(core.AllTags(next))
 
-	layer := NewLayer(tags)
+	layer, _ := NewLayer(tags)
 
 	assert.False(t, layer.On)
 	assert.Equal(t, 4, layer.Color)

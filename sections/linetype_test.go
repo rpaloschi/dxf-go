@@ -7,15 +7,16 @@ import (
 	"testing"
 )
 
-func lineTypeFromDxfFragment(fragment string) *LineType {
+func lineTypeFromDxfFragment(fragment string) (*LineType, error) {
 	next := core.Tagger(strings.NewReader(fragment))
 	tags := core.TagSlice(core.AllTags(next))
 	return NewLineType(tags)
 }
 
 func TestLineTypeDefaultValues(t *testing.T) {
-	lineType := lineTypeFromDxfFragment("")
+	lineType, err := lineTypeFromDxfFragment("")
 
+	assert.Nil(t, err)
 	assert.Equal(t, "", lineType.Name)
 	assert.Equal(t, "", lineType.Description)
 	assert.InDelta(t, 0.0, lineType.Length, 0.001)
@@ -69,8 +70,9 @@ Sample Text
 `
 
 func TestParseLineType(t *testing.T) {
-	lineType := lineTypeFromDxfFragment(dxfLineType)
+	lineType, err := lineTypeFromDxfFragment(dxfLineType)
 
+	assert.Nil(t, err)
 	assert.Equal(t, "DASHDOT", lineType.Name)
 	assert.Equal(t, "Strange dashdot", lineType.Description)
 	assert.InDelta(t, 1.0, lineType.Length, 0.001)

@@ -7,15 +7,16 @@ import (
 	"testing"
 )
 
-func styleFromDxfFragment(fragment string) *Style {
+func styleFromDxfFragment(fragment string) (*Style, error) {
 	next := core.Tagger(strings.NewReader(fragment))
 	tags := core.TagSlice(core.AllTags(next))
 	return NewStyle(tags)
 }
 
 func TestStyleDefaultValues(t *testing.T) {
-	style := styleFromDxfFragment("")
+	style, err := styleFromDxfFragment("")
 
+	assert.Nil(t, err)
 	assert.Equal(t, "", style.Name)
 	assert.InDelta(t, 1.0, style.Height, 0.001)
 	assert.InDelta(t, 1.0, style.Width, 0.001)
@@ -49,8 +50,9 @@ Arial.ttf
 `
 
 func TestDxfStyle(t *testing.T) {
-	style := styleFromDxfFragment(dxfStyle)
+	style, err := styleFromDxfFragment(dxfStyle)
 
+	assert.Nil(t, err)
 	assert.Equal(t, "STANDARD", style.Name)
 	assert.InDelta(t, 3.55, style.Height, 0.001)
 	assert.InDelta(t, 1.1, style.Width, 0.001)

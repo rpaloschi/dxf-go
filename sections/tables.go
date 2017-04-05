@@ -48,7 +48,7 @@ func NewTablesSection(tags core.TagSlice) (*TablesSection, error) {
 		for _, entryTags := range entryTagsList {
 			tableType := entryTags[1].Value.ToString()
 			if tableFactory, ok := tableParsers[tableType]; ok {
-				if err := tableFactory(entryTags); err {
+				if err := tableFactory(entryTags); err != nil {
 					return nil, err
 				}
 			} else {
