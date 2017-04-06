@@ -27,7 +27,7 @@ func (parser StringTypeParser) Parse(d DataType) error {
 	if value, ok := AsString(d); ok {
 		parser.setter(value)
 	} else {
-		return fmt.Errorf("Error parsing type of %v as a String", d)
+		return fmt.Errorf("Error parsing type of %#v as a String", d)
 	}
 	return nil
 }
@@ -60,7 +60,7 @@ func (parser IntTypeParser) Parse(d DataType) error {
 	if value, ok := AsInt(d); ok {
 		parser.setter(value)
 	} else {
-		return fmt.Errorf("Error parsing type of %v as a Int", d)
+		return fmt.Errorf("Error parsing type of %#v as an Integer", d)
 	}
 	return nil
 }
@@ -93,7 +93,7 @@ func (parser FloatTypeParser) Parse(d DataType) error {
 	if value, ok := AsFloat(d); ok {
 		parser.setter(value)
 	} else {
-		return fmt.Errorf("Error parsing type of %v as a Float", d)
+		return fmt.Errorf("Error parsing type of %#v as a Float", d)
 	}
 	return nil
 }
