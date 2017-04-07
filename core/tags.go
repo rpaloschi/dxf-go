@@ -221,7 +221,7 @@ func TagGroups(tags TagSlice, splitCode int) []TagSlice {
 			}
 			group = make(TagSlice, 0)
 			group = append(group, tag)
-		} else {
+		} else if len(group) > 0 {
 			group = append(group, tag)
 		}
 	}
