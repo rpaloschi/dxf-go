@@ -23,6 +23,20 @@ type LineElement struct {
 	Text             string
 }
 
+// Equals compares two LineElement objects for equality.
+func (e LineElement) Equals(other LineElement) bool {
+	return core.FloatEquals(e.Length, other.Length) &&
+		e.AbsoluteRotation == other.AbsoluteRotation &&
+		e.IsTextString == other.IsTextString &&
+		e.IsShape == other.IsShape &&
+		e.ShapeNumber == other.ShapeNumber &&
+		core.FloatEquals(e.Scale, other.Scale) &&
+		core.FloatEquals(e.RotationAngle, other.RotationAngle) &&
+		core.FloatEquals(e.XOffset, other.XOffset) &&
+		core.FloatEquals(e.YOffset, other.YOffset) &&
+		e.Text == other.Text
+}
+
 // LineType representation
 type LineType struct {
 	core.DxfElement
@@ -30,6 +44,27 @@ type LineType struct {
 	Description string
 	Length      float64
 	Pattern     []*LineElement
+}
+
+// Equals compares two LineType objects for equality.
+func (ltype LineType) Equals(other LineType) bool {
+	if ltype.Name != other.Name ||
+		ltype.Description != other.Description ||
+		!core.FloatEquals(ltype.Length, other.Length) ||
+		len(ltype.Pattern) != len(other.Pattern) {
+
+		return false
+	}
+
+	for i, pattern1 := range ltype.Pattern {
+		pattern2 := other.Pattern[i]
+
+		if !pattern1.Equals(*pattern2) {
+			return false
+		}
+	}
+
+	return true
 }
 
 // NewLineType creates a new LineType object from a slice of tags.
