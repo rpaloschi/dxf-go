@@ -39,7 +39,7 @@ func NewTablesSection(tags core.TagSlice) (*TablesSection, error) {
 	tags = tags[2:]
 	stopTag := core.NewTag(0, core.NewStringValue("ENDSEC"))
 	endOfChunk := core.NewTag(0, core.NewStringValue("ENDTAB"))
-	for _, tableTags := range SplitTagChunks(tags, *stopTag, *endOfChunk) {
+	for _, tableTags := range SplitTagChunks(tags, stopTag, endOfChunk) {
 		entryTagsList, err := TableEntryTags(tableTags)
 		if err != nil {
 			return nil, err

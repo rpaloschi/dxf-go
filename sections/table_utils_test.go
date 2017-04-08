@@ -75,3 +75,47 @@ func TestTableEntryTagsValidTable(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, expected, groups)
 }
+
+const tagsToSplit = `  0
+TABLE
+  2
+LAYER
+  0
+TABLE
+  0
+LAYER
+  20
+1.1
+  0
+TABLE
+  60
+1001
+  0
+ENDTAB
+`
+
+func TestSplitTagChunks(t *testing.T) {
+	expected := []core.TagSlice{
+		[]*core.Tag{
+			core.NewTag(0, core.NewStringValue("TABLE")),
+			core.NewTag(2, core.NewStringValue("LAYER")),
+		},
+		[]*core.Tag{
+			core.NewTag(0, core.NewStringValue("TABLE")),
+			core.NewTag(0, core.NewStringValue("LAYER")),
+			core.NewTag(20, core.NewFloatValue(1.1)),
+		},
+		[]*core.Tag{
+			core.NewTag(0, core.NewStringValue("TABLE")),
+			core.NewTag(60, core.NewIntegerValue(1001)),
+		},
+	}
+	next := core.Tagger(strings.NewReader(tagsToSplit))
+	tags := core.TagSlice(core.AllTags(next))
+
+	chunks := SplitTagChunks(tags,
+		core.NewTag(0, core.NewStringValue("ENDTAB")),
+		core.NewTag(0, core.NewStringValue("TABLE")))
+
+	assert.Equal(t, expected, chunks)
+}

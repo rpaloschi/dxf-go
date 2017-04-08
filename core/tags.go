@@ -18,6 +18,10 @@ func (tag Tag) ToString() string {
 	return fmt.Sprintf("{ Code: %v; Value: %v }", tag.Code, tag.Value.ToString())
 }
 
+func (tag Tag) Equals(other Tag) bool {
+	return tag.ToString() == other.ToString()
+}
+
 // NewTag creates a new Tag with code and value
 func NewTag(code int, value DataType) *Tag {
 	tag := new(Tag)
