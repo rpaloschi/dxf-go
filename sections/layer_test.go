@@ -20,8 +20,7 @@ CONTINUOUS
 func layerFromDxfFragment(fragment string) (*Layer, error) {
 	next := core.Tagger(strings.NewReader(fragment))
 	tags := core.TagSlice(core.AllTags(next))
-	layer, err := NewLayer(tags)
-	return layer, err
+	return NewLayer(tags)
 }
 
 func TestLayer(t *testing.T) {
@@ -65,4 +64,89 @@ func TestOffLayer(t *testing.T) {
 
 	assert.False(t, layer.On)
 	assert.Equal(t, 4, layer.Color)
+}
+
+const sampleLayerTable = `  0
+TABLE
+  2
+LAYER
+ 70
+3
+  0
+LAYER
+  2
+0
+ 70
+0
+ 62
+7
+  6
+CONTINUOUS
+  0
+LAYER
+  2
+VIEW_PORT
+ 70
+5
+ 62
+-3
+  6
+DASHED
+  0
+ENDTAB
+`
+
+func TestNewLayerTable(t *testing.T) {
+	expected := map[string]*Layer{
+		"0": {
+			Name: "0", Color: 7, LineType: "CONTINUOUS", Locked: false, Frozen: false, On: true},
+		"VIEW_PORT": {
+			Name: "VIEW_PORT", Color: 3, LineType: "DASHED", Locked: true, Frozen: true, On: false},
+	}
+
+	next := core.Tagger(strings.NewReader(sampleLayerTable))
+	tags := core.TagSlice(core.AllTags(next))
+
+	table, err := NewLayerTable(tags)
+
+	assert.Nil(t, err)
+	assert.Equal(t, len(expected), len(table))
+
+	for key, expectedLayer := range expected {
+		layer := table[key]
+
+		assert.True(t, expectedLayer.Equals(*layer))
+	}
+}
+
+const invalidTableTags = `  0
+TABLE
+  2
+LAYER
+  0
+LAYER
+  20
+1.1
+`
+
+func TestNewLayerTableInvalidTable(t *testing.T) {
+	next := core.Tagger(strings.NewReader(invalidTableTags))
+	tags := core.TagSlice(core.AllTags(next))
+
+	_, err := NewLayerTable(tags)
+
+	assert.Equal(t, "Invalid table. Missing TABLE AND/OR ENDTAB tags.", err.Error())
+}
+
+func TestNewLayerTableWrongTagType(t *testing.T) {
+	next := core.Tagger(strings.NewReader(sampleLayerTable))
+	tags := core.TagSlice(core.AllTags(next))
+
+	tags[6].Value = core.NewStringValue("im an int ;-)")
+
+	_, err := NewLayerTable(tags)
+
+	assert.Equal(t,
+		"Error parsing type of &core.String{value:\"im an int ;-)\"} as an Integer",
+		err.Error())
 }

@@ -18,6 +18,17 @@ type Layer struct {
 	On       bool
 }
 
+// Equals tests equality against another Layer. It only considers the values of the attributes
+// on Layer struct, not on parent core.DxfElement.
+func (l Layer) Equals(other Layer) bool {
+	return l.Name == other.Name &&
+		l.Color == other.Color &&
+		l.LineType == other.LineType &&
+		l.Locked == other.Locked &&
+		l.Frozen == other.Frozen &&
+		l.On == other.On
+}
+
 // NewLayer builds a new Layer from a tag slice.
 func NewLayer(tags core.TagSlice) (*Layer, error) {
 	layer := new(Layer)
