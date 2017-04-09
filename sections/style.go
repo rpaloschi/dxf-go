@@ -25,6 +25,20 @@ type Style struct {
 	BigFont        string
 }
 
+// Equals compares two Style objects for equality.
+func (style Style) Equals(other Style) bool {
+	return style.Name == other.Name &&
+		core.FloatEquals(style.Height, other.Height) &&
+		core.FloatEquals(style.Width, other.Width) &&
+		core.FloatEquals(style.Oblique, other.Oblique) &&
+		style.IsBackwards == other.IsBackwards &&
+		style.IsUpsideDown == other.IsUpsideDown &&
+		style.IsShape == other.IsShape &&
+		style.IsVerticalText == other.IsVerticalText &&
+		style.Font == other.Font &&
+		style.BigFont == other.BigFont
+}
+
 // NewStyle creates a new Style object from a slice of tags.
 func NewStyle(tags core.TagSlice) (*Style, error) {
 	style := new(Style)
