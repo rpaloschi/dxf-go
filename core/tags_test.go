@@ -150,24 +150,24 @@ func TestTagEquality(t *testing.T) {
 	float1 := NewFloatValue(10.01)
 	float2 := NewFloatValue(0.33)
 
-	assert.Equal(t, NewTag(1, str1), NewTag(1, str1))
-	assert.Equal(t, NewTag(2, int1), NewTag(2, int1))
-	assert.Equal(t, NewTag(3, float1), NewTag(3, float1))
+	assert.True(t, NewTag(1, str1).Equals(*NewTag(1, str1)))
+	assert.True(t, NewTag(2, int1).Equals(*NewTag(2, int1)))
+	assert.True(t, NewTag(3, float1).Equals(*NewTag(3, float1)))
 
-	assert.NotEqual(t, NewTag(1, str1), NewTag(1, str2))
-	assert.NotEqual(t, NewTag(0, str1), NewTag(1, str1))
-	assert.NotEqual(t, NewTag(0, str1), NewTag(0, int1))
-	assert.NotEqual(t, NewTag(0, str1), NewTag(0, float1))
+	assert.False(t, NewTag(1, str1).Equals(*NewTag(1, str2)))
+	assert.False(t, NewTag(0, str1).Equals(*NewTag(1, str1)))
+	assert.False(t, NewTag(0, str1).Equals(*NewTag(0, int1)))
+	assert.False(t, NewTag(0, str1).Equals(*NewTag(0, float1)))
 
-	assert.NotEqual(t, NewTag(1, int1), NewTag(1, int2))
-	assert.NotEqual(t, NewTag(0, int1), NewTag(1, int1))
-	assert.NotEqual(t, NewTag(0, int1), NewTag(0, str1))
-	assert.NotEqual(t, NewTag(0, int1), NewTag(0, float1))
+	assert.False(t, NewTag(1, int1).Equals(*NewTag(1, int2)))
+	assert.False(t, NewTag(0, int1).Equals(*NewTag(1, int1)))
+	assert.False(t, NewTag(0, int1).Equals(*NewTag(0, str1)))
+	assert.False(t, NewTag(0, int1).Equals(*NewTag(0, float1)))
 
-	assert.NotEqual(t, NewTag(1, float1), NewTag(1, float2))
-	assert.NotEqual(t, NewTag(0, float1), NewTag(1, float1))
-	assert.NotEqual(t, NewTag(0, float1), NewTag(0, str1))
-	assert.NotEqual(t, NewTag(0, float1), NewTag(0, int1))
+	assert.False(t, NewTag(1, float1).Equals(*NewTag(1, float2)))
+	assert.False(t, NewTag(0, float1).Equals(*NewTag(1, float1)))
+	assert.False(t, NewTag(0, float1).Equals(*NewTag(0, str1)))
+	assert.False(t, NewTag(0, float1).Equals(*NewTag(0, int1)))
 }
 
 type TaggerTestSuite struct {
