@@ -14,10 +14,12 @@ type Tag struct {
 	Value DataType
 }
 
+// ToString returns a string representation of this Tag.
 func (tag Tag) ToString() string {
 	return fmt.Sprintf("{ Code: %v; Value: %v }", tag.Code, tag.Value.ToString())
 }
 
+// Equals tests equality against another Tag.
 func (tag Tag) Equals(other Tag) bool {
 	return tag.ToString() == other.ToString()
 }
