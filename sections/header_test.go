@@ -61,6 +61,14 @@ func (suite *HeaderTestSuite) TestDefaultValues() {
 	suite.Equal(expected, result[0])
 }
 
+func (suite *HeaderTestSuite) TestGetMissingValue() {
+	next := core.Tagger(strings.NewReader(testEmptyHeader))
+	header := NewHeaderSection(core.TagSlice(core.AllTags(next)))
+
+	result := header.Get("MISSING")
+	suite.Equal([]*core.Tag{}, result)
+}
+
 func (suite *HeaderTestSuite) TestGetSimpleTagKey() {
 	result := suite.header.Get("$ACADVER")
 	expected := core.NewTag(1, core.NewStringValue("AC1021"))
@@ -69,6 +77,41 @@ func (suite *HeaderTestSuite) TestGetSimpleTagKey() {
 
 func (suite *HeaderTestSuite) TestMultipleTagsKey() {
 	result := suite.header.Get("$INSBASE")
+	expected := []*core.Tag{
+		core.NewTag(10, core.NewFloatValue(0.1)),
+		core.NewTag(20, core.NewFloatValue(22.0)),
+		core.NewTag(30, core.NewFloatValue(53.5)),
+	}
+	suite.Equal(expected, result)
+}
+
+const testHeaderDuplicateKey = `  0
+SECTION
+  2
+HEADER
+  9
+$ACADVER
+  1
+AC1021
+  9
+$INSBASE
+ 10
+0.1
+  9
+$INSBASE
+ 20
+22.0
+ 30
+53.5
+  0
+ENDSEC
+`
+
+func (suite *HeaderTestSuite) TestDuplicateTagsKey() {
+	next := core.Tagger(strings.NewReader(testHeaderDuplicateKey))
+	tags := core.TagSlice(core.AllTags(next))
+	header := NewHeaderSection(tags)
+	result := header.Get("$INSBASE")
 	expected := []*core.Tag{
 		core.NewTag(10, core.NewFloatValue(0.1)),
 		core.NewTag(20, core.NewFloatValue(22.0)),
