@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"io"
 )
 
 const regularDXF = `  0
@@ -244,6 +245,70 @@ func (suite *TaggerTestSuite) TestIntAndFloatTags() {
 	}
 
 	suite.Equal(expected, AllTags(next))
+}
+
+type MockReader struct {
+	Data []string
+	Done []bool
+	Err  []error
+}
+
+func (r *MockReader) Read(p []byte) (int, error) {
+	if len(r.Data) == 0 {
+		return 0, io.EOF
+	}
+
+	data := r.Data[0]
+	r.Data = r.Data[1:]
+	done := r.Done[0]
+	r.Done = r.Done[1:]
+	err := r.Err[0]
+	r.Err = r.Err[1:]
+
+	copy(p, []byte(data))
+	if done {
+		return 0, err
+	}
+	return len([]byte(data)), nil
+}
+
+func (suite *TaggerTestSuite) TestNextTagFunctionCodeError() {
+	reader := &MockReader{
+		Data: []string{""},
+		Done: []bool{true},
+		Err:  []error{io.ErrUnexpectedEOF}}
+	next := Tagger(reader)
+
+	tag, err := next()
+
+	suite.Equal(NoneTag, *tag)
+	suite.Equal(io.ErrUnexpectedEOF, err)
+}
+
+func (suite *TaggerTestSuite) TestNextTagFunctionValueError() {
+	reader := &MockReader{
+		Data: []string{"10\n", ""},
+		Done: []bool{false, true},
+		Err:  []error{nil, io.ErrUnexpectedEOF}}
+	next := Tagger(reader)
+
+	tag, err := next()
+
+	suite.Equal(NoneTag, *tag)
+	suite.Equal(io.ErrUnexpectedEOF, err)
+}
+
+func (suite *TaggerTestSuite) TestNextTagFunctionInvalidCodeError() {
+	reader := &MockReader{
+		Data: []string{"INVALID\nVALUE", ""},
+		Done: []bool{false, true},
+		Err:  []error{nil, io.EOF}}
+	next := Tagger(reader)
+
+	tag, err := next()
+
+	suite.Equal(NoneTag, *tag)
+	suite.Equal("strconv.Atoi: parsing \"INVALID\": invalid syntax", err.Error())
 }
 
 func TestTaggerTestSuite(t *testing.T) {
