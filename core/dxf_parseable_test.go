@@ -110,14 +110,14 @@ func TestFloatTypeParserToVar(t *testing.T) {
 
 type DxfElementTestSuite struct {
 	suite.Suite
-	element     *DxfElement
+	element     *DxfParseable
 	stringValue string
 	intValue    int
 	floatValue  float64
 }
 
 func (suite *DxfElementTestSuite) SetupTest() {
-	suite.element = new(DxfElement)
+	suite.element = new(DxfParseable)
 	suite.element.Init(map[int]TypeParser{
 		2:  NewStringTypeParserToVar(&suite.stringValue),
 		60: NewIntTypeParserToVar(&suite.intValue),

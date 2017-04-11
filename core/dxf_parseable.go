@@ -115,21 +115,21 @@ func NewFloatTypeParserToVar(variable *float64) *FloatTypeParser {
 	return parser
 }
 
-// DxfElement is the base abstraction for any element in a DXF file that is composed by tags.
+// DxfParseable is the base abstraction for any element in a DXF file that is composed by tags.
 // It defines the basic boilerplate to support parsing and error handling of a slice of tags that
 // composes the element.
-type DxfElement struct {
+type DxfParseable struct {
 	tagParsers map[int]TypeParser
 }
 
-// Init initializes the DxfElement's parser map so that it can be used by the Parse method.
-func (element *DxfElement) Init(parsers map[int]TypeParser) {
+// Init initializes the DxfParseable's parser map so that it can be used by the Parse method.
+func (element *DxfParseable) Init(parsers map[int]TypeParser) {
 	element.tagParsers = parsers
 }
 
 // Parse parses the slice of tags using the configured parser map.
 // Returns an error if any error happens during the process, otherwise it returns nil.
-func (element *DxfElement) Parse(tags TagSlice) error {
+func (element *DxfParseable) Parse(tags TagSlice) error {
 	for _, tag := range tags.RegularTags() {
 		if parser, ok := element.tagParsers[tag.Code]; ok {
 			err := parser.Parse(tag.Value)

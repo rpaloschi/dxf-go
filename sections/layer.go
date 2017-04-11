@@ -9,7 +9,7 @@ const frozenBit = 0x1
 
 // Layer representation.
 type Layer struct {
-	core.DxfElement
+	core.DxfParseable
 	Name     string
 	Color    int
 	LineType string
@@ -19,7 +19,7 @@ type Layer struct {
 }
 
 // Equals tests equality against another Layer. It only considers the values of the attributes
-// on Layer struct, not on parent core.DxfElement.
+// on Layer struct, not on parent core.DxfParseable.
 func (l Layer) Equals(other Layer) bool {
 	return l.Name == other.Name &&
 		l.Color == other.Color &&

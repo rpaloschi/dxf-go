@@ -12,7 +12,7 @@ const upsideDownBit = 0x4
 
 // Style Table representation
 type Style struct {
-	core.DxfElement
+	core.DxfParseable
 	Name           string
 	Height         float64
 	Width          float64

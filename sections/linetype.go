@@ -39,7 +39,7 @@ func (e LineElement) Equals(other LineElement) bool {
 
 // LineType representation
 type LineType struct {
-	core.DxfElement
+	core.DxfParseable
 	Name        string
 	Description string
 	Length      float64
