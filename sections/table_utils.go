@@ -23,7 +23,7 @@ func SplitTagChunks(tags core.TagSlice, stopTag *core.Tag, chunkDelimiter *core.
 	chunks := make([]core.TagSlice, 0)
 
 	tagIndex := 0
-	for {
+	for tagIndex < len(tags) {
 		if tags[tagIndex].Equals(*stopTag) {
 			break
 		}
@@ -32,12 +32,28 @@ func SplitTagChunks(tags core.TagSlice, stopTag *core.Tag, chunkDelimiter *core.
 		chunk[0] = tags[tagIndex]
 		tagIndex++
 
-		for !tags[tagIndex].Equals(*chunkDelimiter) && !tags[tagIndex].Equals(*stopTag) {
-			chunk = append(chunk, tags[tagIndex])
-			tagIndex++
-		}
+		foundStop := false
 
+		for {
+			if tags[tagIndex].Equals(*chunkDelimiter) {
+				chunk = append(chunk, tags[tagIndex])
+				tagIndex++
+				break
+			}
+			if tags[tagIndex].Equals(*stopTag) {
+				foundStop = true
+				tagIndex++
+				break
+			} else {
+				chunk = append(chunk, tags[tagIndex])
+				tagIndex++
+			}
+		}
 		chunks = append(chunks, chunk)
+
+		if foundStop {
+			break
+		}
 	}
 
 	return chunks

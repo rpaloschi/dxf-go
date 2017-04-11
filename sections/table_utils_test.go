@@ -99,14 +99,14 @@ func TestSplitTagChunks(t *testing.T) {
 		[]*core.Tag{
 			core.NewTag(0, core.NewStringValue("TABLE")),
 			core.NewTag(2, core.NewStringValue("LAYER")),
+			core.NewTag(0, core.NewStringValue("TABLE")),
 		},
 		[]*core.Tag{
-			core.NewTag(0, core.NewStringValue("TABLE")),
 			core.NewTag(0, core.NewStringValue("LAYER")),
 			core.NewTag(20, core.NewFloatValue(1.1)),
+			core.NewTag(0, core.NewStringValue("TABLE")),
 		},
 		[]*core.Tag{
-			core.NewTag(0, core.NewStringValue("TABLE")),
 			core.NewTag(60, core.NewIntegerValue(1001)),
 		},
 	}

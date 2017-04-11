@@ -12,6 +12,48 @@ type TablesSection struct {
 	LineTypeTable map[string]*LineType
 }
 
+// Equals Compare two TablesSection for equality
+func (t TablesSection) Equals(other TablesSection) bool {
+	if len(t.LayerTable) != len(other.LayerTable) ||
+		len(t.StyleTable) != len(other.StyleTable) ||
+		len(t.LineTypeTable) != len(other.LineTypeTable) {
+
+		return false
+	}
+
+	for key, layer := range t.LayerTable {
+		if otherLayer, ok := other.LayerTable[key]; ok {
+			if !layer.Equals(*otherLayer) {
+				return false
+			}
+		} else {
+			return false
+		}
+	}
+
+	for key, style := range t.StyleTable {
+		if otherStyle, ok := other.StyleTable[key]; ok {
+			if !style.Equals(*otherStyle) {
+				return false
+			}
+		} else {
+			return false
+		}
+	}
+
+	for key, ltype := range t.LineTypeTable {
+		if otherLType, ok := other.LineTypeTable[key]; ok {
+			if !ltype.Equals(*otherLType) {
+				return false
+			}
+		} else {
+			return false
+		}
+	}
+
+	return true
+}
+
 // NewTablesSection parses the TablesSection from a slice of tags.
 func NewTablesSection(tags core.TagSlice) (*TablesSection, error) {
 	tables := new(TablesSection)
@@ -46,9 +88,9 @@ func NewTablesSection(tags core.TagSlice) (*TablesSection, error) {
 		}
 
 		for _, entryTags := range entryTagsList {
-			tableType := entryTags[1].Value.ToString()
+			tableType := entryTags[0].Value.ToString()
 			if tableFactory, ok := tableParsers[tableType]; ok {
-				if err := tableFactory(entryTags); err != nil {
+				if err := tableFactory(tableTags); err != nil {
 					return nil, err
 				}
 			} else {
