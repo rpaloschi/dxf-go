@@ -5,6 +5,7 @@ import "strconv"
 
 // DataType is an interface for a DXF type.
 type DataType interface {
+	DxfElement
 
 	// ToString returns a string representation of the value
 	ToString() string
@@ -43,6 +44,15 @@ func (s String) Value() interface{} {
 	return s.value
 }
 
+// Equals Compares two Strings for equality.
+// If other cannot be casted to a String, returns false.
+func (s String) Equals(other DxfElement) bool {
+	if sStr, ok := other.(*String); ok {
+		return s.value == sStr.value
+	}
+	return false
+}
+
 // Integer DataType implementation
 type Integer struct {
 	value int
@@ -73,6 +83,15 @@ func (i Integer) Value() interface{} {
 	return i.value
 }
 
+// Equals Compares two Integers for equality.
+// If other cannot be casted to an Integer, returns false.
+func (i Integer) Equals(other DxfElement) bool {
+	if iValue, ok := other.(*Integer); ok {
+		return i.value == iValue.value
+	}
+	return false
+}
+
 // Float DataType implementation
 type Float struct {
 	value float64
@@ -101,6 +120,15 @@ func (f Float) ToString() string {
 // Value returns the encapsulated value
 func (f Float) Value() interface{} {
 	return f.value
+}
+
+// Equals Compares two Floats for equality.
+// If other cannot be casted to a Float, returns false.
+func (f Float) Equals(other DxfElement) bool {
+	if fValue, ok := other.(*Float); ok {
+		return f.value == fValue.value
+	}
+	return false
 }
 
 // AsString is the acessor for a String DataType.

@@ -10,6 +10,13 @@ type HeaderSection struct {
 	values map[string][]*core.Tag
 }
 
+func (section HeaderSection) Equals(other core.DxfElement) bool {
+	/*if otherSection, ok := other.(HeaderSection); ok {
+		return false
+	}*/
+	return false
+}
+
 // NewHeaderSection creates a new *HeaderSection from a core.TagSlice.
 func NewHeaderSection(tags core.TagSlice) *HeaderSection {
 	header := new(HeaderSection)
