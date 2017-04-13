@@ -4,6 +4,7 @@ import "math"
 
 // MinFloatDelta value used to consider a floating point equal to 0, mainly to be used
 // in internal equality functions.
+// TODO: rpaloschi - consider the unit contained on the DXF itself.
 const MinFloatDelta = 0.001
 
 // FloatEquals compares two floats using the MinFloatDelta difference to consider them
