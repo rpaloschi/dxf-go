@@ -20,8 +20,11 @@ func (tag Tag) ToString() string {
 }
 
 // Equals tests equality against another Tag.
-func (tag Tag) Equals(other Tag) bool {
-	return tag.ToString() == other.ToString()
+func (tag Tag) Equals(other DxfElement) bool {
+	if otherTag, ok := other.(*Tag); ok {
+		return tag.Code == otherTag.Code && tag.Value.Equals(otherTag.Value)
+	}
+	return false
 }
 
 // NewTag creates a new Tag with code and value
@@ -102,6 +105,25 @@ func AllTags(next NextTagFunction) []*Tag {
 
 // TagSlice a slice specialization for tag pointers.
 type TagSlice []*Tag
+
+// Equals tests equality against another TagSlice.
+func (slice TagSlice) Equals(other DxfElement) bool {
+	if otherSlice, ok := other.(TagSlice); ok {
+		if len(slice) != len(otherSlice) {
+			return false
+		}
+
+		for index, tag := range slice {
+			otherTag := otherSlice[index]
+
+			if !tag.Equals(otherTag) {
+				return false
+			}
+		}
+		return true
+	}
+	return false
+}
 
 // TagIndex returns the index of the first occurrence of a tag with tagCode between
 // the interval [startingIndex, endIndex).

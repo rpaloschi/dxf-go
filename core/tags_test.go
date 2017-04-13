@@ -151,24 +151,26 @@ func TestTagEquality(t *testing.T) {
 	float1 := NewFloatValue(10.01)
 	float2 := NewFloatValue(0.33)
 
-	assert.True(t, NewTag(1, str1).Equals(*NewTag(1, str1)))
-	assert.True(t, NewTag(2, int1).Equals(*NewTag(2, int1)))
-	assert.True(t, NewTag(3, float1).Equals(*NewTag(3, float1)))
+	assert.True(t, NewTag(1, str1).Equals(NewTag(1, str1)))
+	assert.True(t, NewTag(2, int1).Equals(NewTag(2, int1)))
+	assert.True(t, NewTag(3, float1).Equals(NewTag(3, float1)))
 
-	assert.False(t, NewTag(1, str1).Equals(*NewTag(1, str2)))
-	assert.False(t, NewTag(0, str1).Equals(*NewTag(1, str1)))
-	assert.False(t, NewTag(0, str1).Equals(*NewTag(0, int1)))
-	assert.False(t, NewTag(0, str1).Equals(*NewTag(0, float1)))
+	assert.False(t, NewTag(1, str1).Equals(NewTag(1, str2)))
+	assert.False(t, NewTag(0, str1).Equals(NewTag(1, str1)))
+	assert.False(t, NewTag(0, str1).Equals(NewTag(0, int1)))
+	assert.False(t, NewTag(0, str1).Equals(NewTag(0, float1)))
 
-	assert.False(t, NewTag(1, int1).Equals(*NewTag(1, int2)))
-	assert.False(t, NewTag(0, int1).Equals(*NewTag(1, int1)))
-	assert.False(t, NewTag(0, int1).Equals(*NewTag(0, str1)))
-	assert.False(t, NewTag(0, int1).Equals(*NewTag(0, float1)))
+	assert.False(t, NewTag(1, int1).Equals(NewTag(1, int2)))
+	assert.False(t, NewTag(0, int1).Equals(NewTag(1, int1)))
+	assert.False(t, NewTag(0, int1).Equals(NewTag(0, str1)))
+	assert.False(t, NewTag(0, int1).Equals(NewTag(0, float1)))
 
-	assert.False(t, NewTag(1, float1).Equals(*NewTag(1, float2)))
-	assert.False(t, NewTag(0, float1).Equals(*NewTag(1, float1)))
-	assert.False(t, NewTag(0, float1).Equals(*NewTag(0, str1)))
-	assert.False(t, NewTag(0, float1).Equals(*NewTag(0, int1)))
+	assert.False(t, NewTag(1, float1).Equals(NewTag(1, float2)))
+	assert.False(t, NewTag(0, float1).Equals(NewTag(1, float1)))
+	assert.False(t, NewTag(0, float1).Equals(NewTag(0, str1)))
+	assert.False(t, NewTag(0, float1).Equals(NewTag(0, int1)))
+
+	assert.False(t, NewTag(0, float1).Equals(TagSlice{}))
 }
 
 type TaggerTestSuite struct {
@@ -391,6 +393,24 @@ func (suite *TagSliceTestSuite) TestSubclassesTags() {
 	suite.Equal(12, len(subclasses["AcDbEllipse"]))
 }
 
+func (suite *TagSliceTestSuite) TestTagSliceEquality() {
+	slice1 := TagSlice{NewTag(0, NewStringValue("SECTION"))}
+	slice2 := TagSlice{NewTag(0, NewStringValue("SECTION"))}
+	slice3 := TagSlice{
+		NewTag(10, NewFloatValue(20.17)),
+		NewTag(20, NewFloatValue(1.1)),
+	}
+	slice4 := TagSlice{
+		NewTag(10, NewFloatValue(20.17)),
+		NewTag(60, NewIntegerValue(2017)),
+	}
+
+	suite.True(slice1.Equals(slice2))
+	suite.False(slice1.Equals(slice4))
+	suite.False(slice3.Equals(slice4))
+	suite.False(slice2.Equals(NewIntegerValue(1)))
+}
+
 func TestTagSliceTestSuite(t *testing.T) {
 	suite.Run(t, new(TagSliceTestSuite))
 }
@@ -412,5 +432,9 @@ func TestTagGroups(t *testing.T) {
 		},
 	}
 
-	assert.EqualValues(t, expected, groups)
+	for index, slice := range expected {
+		otherSlice := groups[index]
+
+		assert.True(t, slice.Equals(otherSlice))
+	}
 }
