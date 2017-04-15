@@ -5,6 +5,9 @@ import (
 	"github.com/rpaloschi/dxf-go/core"
 )
 
+// TableEntryTags splits a slice of tags that contains the TABLES entry of a DXF file, validates
+// its basic structure and returns only the tags to be parsed as tables. (Removes the
+// initial and final markup tags for table).
 func TableEntryTags(tags core.TagSlice) ([]core.TagSlice, error) {
 	groups := core.TagGroups(tags, 0)
 	lastIndex := len(groups) - 1
@@ -19,6 +22,8 @@ func TableEntryTags(tags core.TagSlice) ([]core.TagSlice, error) {
 	return groups[1:lastIndex], nil
 }
 
+// SplitTagChunks splits a TagSlice into a series of TagSlices delimited by chunkDelimiter tags.
+// The Iteration ends at stopTag.
 func SplitTagChunks(tags core.TagSlice, stopTag *core.Tag, chunkDelimiter *core.Tag) []core.TagSlice {
 	chunks := make([]core.TagSlice, 0)
 
