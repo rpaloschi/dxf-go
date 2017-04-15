@@ -96,17 +96,17 @@ ENDTAB
 
 func TestSplitTagChunks(t *testing.T) {
 	expected := []core.TagSlice{
-		[]*core.Tag{
+		{
 			core.NewTag(0, core.NewStringValue("TABLE")),
 			core.NewTag(2, core.NewStringValue("LAYER")),
 			core.NewTag(0, core.NewStringValue("TABLE")),
 		},
-		[]*core.Tag{
+		{
 			core.NewTag(0, core.NewStringValue("LAYER")),
 			core.NewTag(20, core.NewFloatValue(1.1)),
 			core.NewTag(0, core.NewStringValue("TABLE")),
 		},
-		[]*core.Tag{
+		{
 			core.NewTag(60, core.NewIntegerValue(1001)),
 		},
 	}
@@ -117,5 +117,9 @@ func TestSplitTagChunks(t *testing.T) {
 		core.NewTag(0, core.NewStringValue("ENDTAB")),
 		core.NewTag(0, core.NewStringValue("TABLE")))
 
-	assert.Equal(t, expected, chunks)
+	for index, slice := range expected {
+		otherSlice := chunks[index]
+
+		assert.True(t, slice.Equals(otherSlice))
+	}
 }

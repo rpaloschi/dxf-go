@@ -66,7 +66,7 @@ func (suite *HeaderTestSuite) TestGetMissingValue() {
 	header := NewHeaderSection(core.TagSlice(core.AllTags(next)))
 
 	result := header.Get("MISSING")
-	suite.Equal([]*core.Tag{}, result)
+	suite.Equal(core.TagSlice{}, result)
 }
 
 func (suite *HeaderTestSuite) TestGetSimpleTagKey() {
@@ -77,7 +77,7 @@ func (suite *HeaderTestSuite) TestGetSimpleTagKey() {
 
 func (suite *HeaderTestSuite) TestMultipleTagsKey() {
 	result := suite.header.Get("$INSBASE")
-	expected := []*core.Tag{
+	expected := core.TagSlice{
 		core.NewTag(10, core.NewFloatValue(0.1)),
 		core.NewTag(20, core.NewFloatValue(22.0)),
 		core.NewTag(30, core.NewFloatValue(53.5)),
@@ -112,12 +112,33 @@ func (suite *HeaderTestSuite) TestDuplicateTagsKey() {
 	tags := core.TagSlice(core.AllTags(next))
 	header := NewHeaderSection(tags)
 	result := header.Get("$INSBASE")
-	expected := []*core.Tag{
+	expected := core.TagSlice{
 		core.NewTag(10, core.NewFloatValue(0.1)),
 		core.NewTag(20, core.NewFloatValue(22.0)),
 		core.NewTag(30, core.NewFloatValue(53.5)),
 	}
 	suite.Equal(expected, result)
+}
+
+func (suite *HeaderTestSuite) TestHeaderEquality() {
+	header1 := &HeaderSection{values: map[string]core.TagSlice{
+		"KEY1": {core.NewTag(0, core.NewStringValue("SECTION"))}}}
+	header2 := &HeaderSection{values: map[string]core.TagSlice{
+		"KEY1": {core.NewTag(0, core.NewStringValue("SECTION"))}}}
+	header3 := &HeaderSection{values: map[string]core.TagSlice{
+		"KEY2": {core.NewTag(10, core.NewFloatValue(20.17))},
+		"KEY3": {core.NewTag(20, core.NewFloatValue(1.1))}}}
+	header4 := &HeaderSection{values: map[string]core.TagSlice{
+		"KEY2": {core.NewTag(10, core.NewFloatValue(20.17))},
+		"KEY5": {core.NewTag(60, core.NewIntegerValue(2017))}}}
+	header5 := &HeaderSection{values: map[string]core.TagSlice{
+		"KEY1": {core.NewTag(0, core.NewStringValue("OTHER"))}}}
+
+	suite.True(header1.Equals(header2))
+	suite.False(header1.Equals(header4))
+	suite.False(header3.Equals(header4))
+	suite.False(header1.Equals(header5))
+	suite.False(header2.Equals(core.NewIntegerValue(1)))
 }
 
 func TestHeaderTestSuite(t *testing.T) {
