@@ -20,13 +20,16 @@ type Layer struct {
 
 // Equals tests equality against another Layer. It only considers the values of the attributes
 // on Layer struct, not on parent core.DxfParseable.
-func (l Layer) Equals(other Layer) bool {
-	return l.Name == other.Name &&
-		l.Color == other.Color &&
-		l.LineType == other.LineType &&
-		l.Locked == other.Locked &&
-		l.Frozen == other.Frozen &&
-		l.On == other.On
+func (l Layer) Equals(other core.DxfElement) bool {
+	if otherLayer, ok := other.(*Layer); ok {
+		return l.Name == otherLayer.Name &&
+			l.Color == otherLayer.Color &&
+			l.LineType == otherLayer.LineType &&
+			l.Locked == otherLayer.Locked &&
+			l.Frozen == otherLayer.Frozen &&
+			l.On == otherLayer.On
+	}
+	return false
 }
 
 // NewLayer builds a new Layer from a tag slice.

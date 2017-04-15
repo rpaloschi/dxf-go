@@ -23,7 +23,7 @@ func (t TablesSection) Equals(other TablesSection) bool {
 
 	for key, layer := range t.LayerTable {
 		if otherLayer, ok := other.LayerTable[key]; ok {
-			if !layer.Equals(*otherLayer) {
+			if !layer.Equals(otherLayer) {
 				return false
 			}
 		} else {

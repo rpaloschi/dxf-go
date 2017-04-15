@@ -115,7 +115,7 @@ func TestNewLayerTable(t *testing.T) {
 	for key, expectedLayer := range expected {
 		layer := table[key]
 
-		assert.True(t, expectedLayer.Equals(*layer))
+		assert.True(t, expectedLayer.Equals(layer))
 	}
 }
 
@@ -149,4 +149,9 @@ func TestNewLayerTableWrongTagType(t *testing.T) {
 	assert.Equal(t,
 		"Error parsing type of &core.String{value:\"im an int ;-)\"} as an Integer",
 		err.Error())
+}
+
+func TestCompareLayerWrongTypeType(t *testing.T) {
+	layer, _ := layerFromDxfFragment(dxfLayer)
+	assert.False(t, layer.Equals(core.NewStringValue("str")))
 }
