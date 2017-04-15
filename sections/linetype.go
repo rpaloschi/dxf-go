@@ -47,24 +47,26 @@ type LineType struct {
 }
 
 // Equals compares two LineType objects for equality.
-func (ltype LineType) Equals(other LineType) bool {
-	if ltype.Name != other.Name ||
-		ltype.Description != other.Description ||
-		!core.FloatEquals(ltype.Length, other.Length) ||
-		len(ltype.Pattern) != len(other.Pattern) {
+func (ltype LineType) Equals(other core.DxfElement) bool {
+	if otherLtype, ok := other.(*LineType); ok {
+		if ltype.Name != otherLtype.Name ||
+			ltype.Description != otherLtype.Description ||
+			!core.FloatEquals(ltype.Length, otherLtype.Length) ||
+			len(ltype.Pattern) != len(otherLtype.Pattern) {
 
-		return false
-	}
-
-	for i, pattern1 := range ltype.Pattern {
-		pattern2 := other.Pattern[i]
-
-		if !pattern1.Equals(*pattern2) {
 			return false
 		}
-	}
 
-	return true
+		for i, pattern1 := range ltype.Pattern {
+			pattern2 := otherLtype.Pattern[i]
+
+			if !pattern1.Equals(*pattern2) {
+				return false
+			}
+		}
+		return true
+	}
+	return false
 }
 
 // NewLineType creates a new LineType object from a slice of tags.

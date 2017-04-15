@@ -204,7 +204,7 @@ func TestNewLineTypeTable(t *testing.T) {
 	for key, expectedLineType := range expected {
 		ltype := table[key]
 
-		assert.True(t, expectedLineType.Equals(*ltype),
+		assert.True(t, expectedLineType.Equals(ltype),
 			"Expected %+v and %+v to be equal",
 			spew.Sdump(expectedLineType), spew.Sdump(ltype))
 	}
@@ -266,7 +266,7 @@ func TestLineTypeEquals(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		assert.Equal(t, test.lhs.Equals(*test.rhs), test.equals)
+		assert.Equal(t, test.lhs.Equals(test.rhs), test.equals)
 	}
 }
 
@@ -330,4 +330,9 @@ func TestParseLineTypeShapeNrWhenIsText(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, 0, lineType.Pattern[0].ShapeNumber)
+}
+
+func TestCompareLineTypeWrongType(t *testing.T) {
+	layer, _ := lineTypeFromDxfFragment(dxfLineTypeShapeNrNot0AndText)
+	assert.False(t, layer.Equals(core.NewStringValue("str")))
 }

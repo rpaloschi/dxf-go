@@ -43,7 +43,7 @@ func (t TablesSection) Equals(other TablesSection) bool {
 
 	for key, ltype := range t.LineTypeTable {
 		if otherLType, ok := other.LineTypeTable[key]; ok {
-			if !ltype.Equals(*otherLType) {
+			if !ltype.Equals(otherLType) {
 				return false
 			}
 		} else {

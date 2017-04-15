@@ -151,7 +151,7 @@ func TestNewLayerTableWrongTagType(t *testing.T) {
 		err.Error())
 }
 
-func TestCompareLayerWrongTypeType(t *testing.T) {
+func TestCompareLayerWrongType(t *testing.T) {
 	layer, _ := layerFromDxfFragment(dxfLayer)
 	assert.False(t, layer.Equals(core.NewStringValue("str")))
 }
