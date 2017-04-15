@@ -33,7 +33,7 @@ func (t TablesSection) Equals(other TablesSection) bool {
 
 	for key, style := range t.StyleTable {
 		if otherStyle, ok := other.StyleTable[key]; ok {
-			if !style.Equals(*otherStyle) {
+			if !style.Equals(otherStyle) {
 				return false
 			}
 		} else {

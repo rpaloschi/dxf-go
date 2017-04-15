@@ -26,17 +26,20 @@ type Style struct {
 }
 
 // Equals compares two Style objects for equality.
-func (style Style) Equals(other Style) bool {
-	return style.Name == other.Name &&
-		core.FloatEquals(style.Height, other.Height) &&
-		core.FloatEquals(style.Width, other.Width) &&
-		core.FloatEquals(style.Oblique, other.Oblique) &&
-		style.IsBackwards == other.IsBackwards &&
-		style.IsUpsideDown == other.IsUpsideDown &&
-		style.IsShape == other.IsShape &&
-		style.IsVerticalText == other.IsVerticalText &&
-		style.Font == other.Font &&
-		style.BigFont == other.BigFont
+func (style Style) Equals(other core.DxfElement) bool {
+	if otherStyle, ok := other.(*Style); ok {
+		return style.Name == otherStyle.Name &&
+			core.FloatEquals(style.Height, otherStyle.Height) &&
+			core.FloatEquals(style.Width, otherStyle.Width) &&
+			core.FloatEquals(style.Oblique, otherStyle.Oblique) &&
+			style.IsBackwards == otherStyle.IsBackwards &&
+			style.IsUpsideDown == otherStyle.IsUpsideDown &&
+			style.IsShape == otherStyle.IsShape &&
+			style.IsVerticalText == otherStyle.IsVerticalText &&
+			style.Font == otherStyle.Font &&
+			style.BigFont == otherStyle.BigFont
+	}
+	return false
 }
 
 // NewStyle creates a new Style object from a slice of tags.

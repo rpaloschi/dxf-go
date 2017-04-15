@@ -162,7 +162,7 @@ func TestNewStyleTable(t *testing.T) {
 	for key, expectedStyle := range expected {
 		style := table[key]
 
-		assert.True(t, expectedStyle.Equals(*style))
+		assert.True(t, expectedStyle.Equals(style))
 	}
 }
 
@@ -196,4 +196,8 @@ func TestNewStyleTableWrongTagType(t *testing.T) {
 	assert.Equal(t,
 		"Error parsing type of &core.String{value:\"im a fake int\"} as an Integer",
 		err.Error())
+}
+
+func TestCompareStyleWrongType(t *testing.T) {
+	assert.False(t, Style{}.Equals(core.NewStringValue("str")))
 }
