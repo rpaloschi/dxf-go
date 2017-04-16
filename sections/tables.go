@@ -5,45 +5,74 @@ import (
 	"github.com/rpaloschi/dxf-go/core"
 )
 
-// TablesSection representation
-type TablesSection struct {
-	LayerTable    map[string]*Layer
-	StyleTable    map[string]*Style
-	LineTypeTable map[string]*LineType
+type StringMappedTable interface {
+	Keys() []string
+	Get(key string) (core.DxfElement, bool)
 }
 
-// Equals Compare two TablesSection for equality
-func (t TablesSection) Equals(other TablesSection) bool {
-	if len(t.LayerTable) != len(other.LayerTable) ||
-		len(t.StyleTable) != len(other.StyleTable) ||
-		len(t.LineTypeTable) != len(other.LineTypeTable) {
+type LayerTable map[string]*Layer
 
+func (table LayerTable) Keys() []string {
+	keys := make([]string, len(table))
+	i := 0
+	for k := range table {
+		keys[i] = k
+		i++
+	}
+	return keys
+}
+
+func (table LayerTable) Get(key string) (core.DxfElement, bool) {
+	element, ok := table[key]
+	return element, ok
+}
+
+type StyleTable map[string]*Style
+
+func (table StyleTable) Keys() []string {
+	keys := make([]string, len(table))
+	i := 0
+	for k := range table {
+		keys[i] = k
+		i++
+	}
+	return keys
+}
+
+func (table StyleTable) Get(key string) (core.DxfElement, bool) {
+	element, ok := table[key]
+	return element, ok
+}
+
+type LineTypeTable map[string]*LineType
+
+func (table LineTypeTable) Keys() []string {
+	keys := make([]string, len(table))
+	i := 0
+	for k := range table {
+		keys[i] = k
+		i++
+	}
+	return keys
+}
+
+func (table LineTypeTable) Get(key string) (core.DxfElement, bool) {
+	element, ok := table[key]
+	return element, ok
+}
+
+func StringMappedTablesAreEquals(tableA StringMappedTable, tableB StringMappedTable) bool {
+	keysA := tableA.Keys()
+	keysB := tableB.Keys()
+
+	if len(keysA) != len(keysB) {
 		return false
 	}
 
-	for key, layer := range t.LayerTable {
-		if otherLayer, ok := other.LayerTable[key]; ok {
-			if !layer.Equals(otherLayer) {
-				return false
-			}
-		} else {
-			return false
-		}
-	}
-
-	for key, style := range t.StyleTable {
-		if otherStyle, ok := other.StyleTable[key]; ok {
-			if !style.Equals(otherStyle) {
-				return false
-			}
-		} else {
-			return false
-		}
-	}
-
-	for key, ltype := range t.LineTypeTable {
-		if otherLType, ok := other.LineTypeTable[key]; ok {
-			if !ltype.Equals(otherLType) {
+	for _, key := range keysA {
+		elementA, _ := tableA.Get(key)
+		if elementB, ok := tableB.Get(key); ok {
+			if !elementA.Equals(elementB) {
 				return false
 			}
 		} else {
@@ -54,6 +83,24 @@ func (t TablesSection) Equals(other TablesSection) bool {
 	return true
 }
 
+// TablesSection representation
+type TablesSection struct {
+	Layers    LayerTable
+	Styles    StyleTable
+	LineTypes LineTypeTable
+}
+
+// Equals Compare two TablesSection for equality
+func (t TablesSection) Equals(other core.DxfElement) bool {
+	if otherTable, ok := other.(*TablesSection); ok {
+		return StringMappedTablesAreEquals(t.Layers, otherTable.Layers) &&
+			StringMappedTablesAreEquals(t.Styles, otherTable.Styles) &&
+			StringMappedTablesAreEquals(t.LineTypes, otherTable.LineTypes)
+	}
+
+	return false
+}
+
 // NewTablesSection parses the TablesSection from a slice of tags.
 func NewTablesSection(tags core.TagSlice) (*TablesSection, error) {
 	tables := new(TablesSection)
@@ -61,18 +108,18 @@ func NewTablesSection(tags core.TagSlice) (*TablesSection, error) {
 	tableParsers := map[string]func(slice core.TagSlice) error{
 		"LAYER": func(slice core.TagSlice) error {
 			layerTables, err := NewLayerTable(slice)
-			tables.LayerTable = layerTables
+			tables.Layers = layerTables
 			return err
 
 		},
 		"STYLE": func(slice core.TagSlice) error {
 			styleTables, err := NewStyleTable(slice)
-			tables.StyleTable = styleTables
+			tables.Styles = styleTables
 			return err
 		},
 		"LTYPE": func(slice core.TagSlice) error {
 			lineTypeTables, err := NewLineTypeTable(slice)
-			tables.LineTypeTable = lineTypeTables
+			tables.LineTypes = lineTypeTables
 			return err
 		},
 	}
