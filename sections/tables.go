@@ -5,13 +5,18 @@ import (
 	"github.com/rpaloschi/dxf-go/core"
 )
 
+// StringMappedTable is an abstraction of any map string->DxfElement.
+// The intention is to be able to apply consistent algorithms through different
+// typed maps.
 type StringMappedTable interface {
 	Keys() []string
 	Get(key string) (core.DxfElement, bool)
 }
 
+// LayerTable layer table implementation. (Implements StringMappedTable).
 type LayerTable map[string]*Layer
 
+// Keys the LayerTable keys.
 func (table LayerTable) Keys() []string {
 	keys := make([]string, len(table))
 	i := 0
@@ -22,13 +27,16 @@ func (table LayerTable) Keys() []string {
 	return keys
 }
 
+// Get returns a DxfElement at key.
 func (table LayerTable) Get(key string) (core.DxfElement, bool) {
 	element, ok := table[key]
 	return element, ok
 }
 
+// StyleTable style table implementation. (Implements StringMappedTable).
 type StyleTable map[string]*Style
 
+// Keys the StyleTable keys.
 func (table StyleTable) Keys() []string {
 	keys := make([]string, len(table))
 	i := 0
@@ -39,13 +47,16 @@ func (table StyleTable) Keys() []string {
 	return keys
 }
 
+// Get returns a DxfElement at key.
 func (table StyleTable) Get(key string) (core.DxfElement, bool) {
 	element, ok := table[key]
 	return element, ok
 }
 
+// LineTypeTable ltype table implementation. (Implements StringMappedTable).
 type LineTypeTable map[string]*LineType
 
+// Keys the LineTypeTable keys.
 func (table LineTypeTable) Keys() []string {
 	keys := make([]string, len(table))
 	i := 0
@@ -56,11 +67,13 @@ func (table LineTypeTable) Keys() []string {
 	return keys
 }
 
+// Get returns a DxfElement at key.
 func (table LineTypeTable) Get(key string) (core.DxfElement, bool) {
 	element, ok := table[key]
 	return element, ok
 }
 
+// StringMappedTablesAreEquals generic algorithm to compare tableA and tableB for equality.
 func StringMappedTablesAreEquals(tableA StringMappedTable, tableB StringMappedTable) bool {
 	keysA := tableA.Keys()
 	keysB := tableB.Keys()
