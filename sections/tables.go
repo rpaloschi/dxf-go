@@ -5,110 +5,45 @@ import (
 	"github.com/rpaloschi/dxf-go/core"
 )
 
-// StringMappedTable is an abstraction of any map string->DxfElement.
-// The intention is to be able to apply consistent algorithms through different
-// typed maps.
-type StringMappedTable interface {
-	Keys() []string
-	Get(key string) (core.DxfElement, bool)
-}
+// Table representation.
+type Table map[string]core.DxfElement
 
-// LayerTable layer table implementation. (Implements StringMappedTable).
-type LayerTable map[string]*Layer
-
-// Keys the LayerTable keys.
-func (table LayerTable) Keys() []string {
-	keys := make([]string, len(table))
-	i := 0
-	for k := range table {
-		keys[i] = k
-		i++
-	}
-	return keys
-}
-
-// Get returns a DxfElement at key.
-func (table LayerTable) Get(key string) (core.DxfElement, bool) {
-	element, ok := table[key]
-	return element, ok
-}
-
-// StyleTable style table implementation. (Implements StringMappedTable).
-type StyleTable map[string]*Style
-
-// Keys the StyleTable keys.
-func (table StyleTable) Keys() []string {
-	keys := make([]string, len(table))
-	i := 0
-	for k := range table {
-		keys[i] = k
-		i++
-	}
-	return keys
-}
-
-// Get returns a DxfElement at key.
-func (table StyleTable) Get(key string) (core.DxfElement, bool) {
-	element, ok := table[key]
-	return element, ok
-}
-
-// LineTypeTable ltype table implementation. (Implements StringMappedTable).
-type LineTypeTable map[string]*LineType
-
-// Keys the LineTypeTable keys.
-func (table LineTypeTable) Keys() []string {
-	keys := make([]string, len(table))
-	i := 0
-	for k := range table {
-		keys[i] = k
-		i++
-	}
-	return keys
-}
-
-// Get returns a DxfElement at key.
-func (table LineTypeTable) Get(key string) (core.DxfElement, bool) {
-	element, ok := table[key]
-	return element, ok
-}
-
-// StringMappedTablesAreEquals generic algorithm to compare tableA and tableB for equality.
-func StringMappedTablesAreEquals(tableA StringMappedTable, tableB StringMappedTable) bool {
-	keysA := tableA.Keys()
-	keysB := tableB.Keys()
-
-	if len(keysA) != len(keysB) {
-		return false
-	}
-
-	for _, key := range keysA {
-		elementA, _ := tableA.Get(key)
-		if elementB, ok := tableB.Get(key); ok {
-			if !elementA.Equals(elementB) {
-				return false
-			}
-		} else {
+// Equals Compare two Tables for equality
+func (t Table) Equals(other core.DxfElement) bool {
+	if otherTable, ok := other.(Table); ok {
+		if len(t) != len(otherTable) {
 			return false
 		}
+
+		for key, element := range t {
+			if otherElement, ok := otherTable[key]; ok {
+				if !element.Equals(otherElement) {
+					return false
+				}
+			} else {
+				return false
+			}
+
+		}
+		return true
 	}
 
-	return true
+	return false
 }
 
 // TablesSection representation
 type TablesSection struct {
-	Layers    LayerTable
-	Styles    StyleTable
-	LineTypes LineTypeTable
+	Layers    Table
+	Styles    Table
+	LineTypes Table
 }
 
 // Equals Compare two TablesSection for equality
 func (t TablesSection) Equals(other core.DxfElement) bool {
 	if otherTable, ok := other.(*TablesSection); ok {
-		return StringMappedTablesAreEquals(t.Layers, otherTable.Layers) &&
-			StringMappedTablesAreEquals(t.Styles, otherTable.Styles) &&
-			StringMappedTablesAreEquals(t.LineTypes, otherTable.LineTypes)
+		return t.Layers.Equals(otherTable.Layers) &&
+			t.Styles.Equals(otherTable.Styles) &&
+			t.LineTypes.Equals(otherTable.LineTypes)
 	}
 
 	return false

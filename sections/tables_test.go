@@ -8,55 +8,59 @@ import (
 	"testing"
 )
 
-func TestStringMappedTablesAreEquals(t *testing.T) {
+func TestTableEquality(t *testing.T) {
 	tests := []struct {
-		t1     StringMappedTable
-		t2     StringMappedTable
+		t1     Table
+		t2     Table
 		equals bool
 	}{
 		{
-			t1:     LayerTable{"VIEW_PORT": {Name: "VIEW_PORT"}},
-			t2:     LayerTable{"VIEW_PORT": {Name: "VIEW_PORT"}},
+			t1:     Table{"VIEW_PORT": &Layer{Name: "VIEW_PORT"}},
+			t2:     Table{"VIEW_PORT": &Layer{Name: "VIEW_PORT"}},
 			equals: true,
 		},
 		{
-			t1:     StyleTable{"Style": {Name: "Style"}},
-			t2:     StyleTable{"Style": {Name: "Style"}},
+			t1:     Table{"Style": &Style{Name: "Style"}},
+			t2:     Table{"Style": &Style{Name: "Style"}},
 			equals: true,
 		},
 		{
-			t1:     LineTypeTable{"LineTypeTable": {Name: "LineTypeTable"}},
-			t2:     LineTypeTable{"LineTypeTable": {Name: "LineTypeTable"}},
+			t1:     Table{"LineTypeTable": &LineType{Name: "LineTypeTable"}},
+			t2:     Table{"LineTypeTable": &LineType{Name: "LineTypeTable"}},
 			equals: true,
 		},
 		{
-			t1: LineTypeTable{"LineTypeTable": {Name: "LineTypeTable"}},
-			t2: LineTypeTable{
-				"LineTypeTable":  {Name: "LineTypeTable"},
-				"LineTypeTable2": {Name: "LineTypeTable2"}},
+			t1: Table{"LineTypeTable": &LineType{Name: "LineTypeTable"}},
+			t2: Table{
+				"LineTypeTable":  &LineType{Name: "LineTypeTable"},
+				"LineTypeTable2": &LineType{Name: "LineTypeTable2"}},
 			equals: false,
 		},
 		{
-			t1:     LayerTable{"VIEW_PORT": {Name: "VIEW_PORT"}},
-			t2:     LayerTable{"OTHER": {Name: "OTHER"}},
+			t1:     Table{"VIEW_PORT": &Layer{Name: "VIEW_PORT"}},
+			t2:     Table{"OTHER": &Layer{Name: "OTHER"}},
 			equals: false,
 		},
 		{
-			t1:     LayerTable{"VIEW_PORT": {Name: "VIEW_PORT"}},
-			t2:     LayerTable{"VIEW_PORT": {Name: "OTHER"}},
+			t1:     Table{"VIEW_PORT": &Layer{Name: "VIEW_PORT"}},
+			t2:     Table{"VIEW_PORT": &Layer{Name: "OTHER"}},
 			equals: false,
 		},
 	}
 
 	for _, test := range tests {
-		assert.Equal(t, StringMappedTablesAreEquals(test.t1, test.t2), test.equals)
+		assert.Equal(t, test.t1.Equals(test.t2), test.equals)
 	}
+}
+
+func TestTableNotEqualsToOtherTypes(t *testing.T) {
+	assert.False(t, Table{"Style": &Style{Name: "Style"}}.Equals(core.NewIntegerValue(0)))
 }
 
 func TestNewTablesSection(t *testing.T) {
 	expected := TablesSection{
-		Layers: LayerTable{
-			"VIEW_PORT": {
+		Layers: Table{
+			"VIEW_PORT": &Layer{
 				Name:     "VIEW_PORT",
 				Color:    3,
 				LineType: "DASHED",
@@ -65,16 +69,16 @@ func TestNewTablesSection(t *testing.T) {
 				On:       false,
 			},
 		},
-		LineTypes: LineTypeTable{
-			"CONTINUOUS": {
+		LineTypes: Table{
+			"CONTINUOUS": &LineType{
 				Name:        "CONTINUOUS",
 				Description: "Solid line",
 				Length:      1.0,
 				Pattern:     []*LineElement{},
 			},
 		},
-		Styles: StyleTable{
-			"H_TEXT": {
+		Styles: Table{
+			"H_TEXT": &Style{
 				Name:           "H_TEXT",
 				Height:         1.0,
 				Width:          1.0,
@@ -299,7 +303,7 @@ ENDSEC
 `
 
 func TestDifferentTablesSection(t *testing.T) {
-	section := TablesSection{Layers: LayerTable{"VIEW_PORT": {Name: "VIEW_PORT"}}}
+	section := TablesSection{Layers: Table{"VIEW_PORT": &Layer{Name: "VIEW_PORT"}}}
 
 	assert.Equal(t, section.Equals(core.NewIntegerValue(1)), false)
 }

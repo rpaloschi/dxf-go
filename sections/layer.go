@@ -62,8 +62,8 @@ func NewLayer(tags core.TagSlice) (*Layer, error) {
 
 // NewLayerTable parses the slice of tags into a table that maps the layer name to
 // the parsed Layer object.
-func NewLayerTable(tags core.TagSlice) (map[string]*Layer, error) {
-	table := make(map[string]*Layer)
+func NewLayerTable(tags core.TagSlice) (Table, error) {
+	table := make(Table)
 
 	tableSlices, err := TableEntryTags(tags)
 	if err != nil {

@@ -134,8 +134,8 @@ func NewLineType(tags core.TagSlice) (*LineType, error) {
 
 // NewLineTypeTable parses the slice of tags into a table that maps the LineType name to
 // the parsed LineType object.
-func NewLineTypeTable(tags core.TagSlice) (map[string]*LineType, error) {
-	table := make(map[string]*LineType)
+func NewLineTypeTable(tags core.TagSlice) (Table, error) {
+	table := make(Table)
 
 	tableSlices, err := TableEntryTags(tags)
 	if err != nil {
