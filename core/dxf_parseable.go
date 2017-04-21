@@ -127,6 +127,18 @@ func (element *DxfParseable) Init(parsers map[int]TypeParser) {
 	element.tagParsers = parsers
 }
 
+// Update the tagParsers with the content on parsers.
+func (element *DxfParseable) Update(parsers map[int]TypeParser) {
+	if len(element.tagParsers) == 0 {
+		element.tagParsers = parsers
+	} else {
+		for key, value := range parsers {
+			element.tagParsers[key] = value
+		}
+	}
+	element.tagParsers = parsers
+}
+
 // Parse parses the slice of tags using the configured parser map.
 // Returns an error if any error happens during the process, otherwise it returns nil.
 func (element *DxfParseable) Parse(tags TagSlice) error {
