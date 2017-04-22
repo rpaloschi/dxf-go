@@ -27,7 +27,7 @@ func (c Circle) Equals(other core.DxfElement) bool {
 func NewCircle(tags core.TagSlice) (*Circle, error) {
 	circle := new(Circle)
 
-	// set defaults (the ones which the zero value is the same are not initialized here)
+	// set defaults
 	circle.Radius = 1.0
 	circle.ExtrusionDirection = core.Point{X: 0.0, Y: 0.0, Z: 1.0}
 
