@@ -139,6 +139,23 @@ func (suite *DxfElementTestSuite) TestValidTags() {
 	suite.Equal(15, suite.intValue)
 }
 
+func (suite *DxfElementTestSuite) TestUpdate() {
+	suite.Equal(3, len(suite.element.tagParsers))
+
+	suite.element.Update(map[int]TypeParser{
+		9: NewStringTypeParserToVar(&suite.stringValue),
+	})
+
+	suite.Equal(4, len(suite.element.tagParsers))
+
+	empty := new(DxfParseable)
+	empty.Update(map[int]TypeParser{
+		9: NewStringTypeParserToVar(&suite.stringValue),
+	})
+
+	suite.Equal(1, len(empty.tagParsers))
+}
+
 func (suite *DxfElementTestSuite) TestInvalidValidTagType() {
 	tags := TagSlice{
 		NewTag(20, NewFloatValue(1.5)),

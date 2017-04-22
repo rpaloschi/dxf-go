@@ -43,12 +43,10 @@ type BaseEntity struct {
 	ShadowMode    ShadowMode
 }
 
-// BaseEntityEquals compare two BaseEntity objects for equality.
-// It has a different name and does not implements DxfElement because it is intended
-// to be called inside every Entity implementation in order to compare the
-// base attributes that is common to all Entity types. If the method was just
-// `Equals` it would be difficult to call it from the compose classes Equal method.
-func (entity BaseEntity) BaseEntityEquals(other BaseEntity) bool {
+// Equals compare two BaseEntity objects for equality.
+// It does not implements DxfElement by design, meaning that the composed
+// Entity structs should do.
+func (entity BaseEntity) Equals(other BaseEntity) bool {
 	return entity.Handle == other.Handle &&
 		entity.Owner == other.Owner &&
 		entity.Space == other.Space &&
@@ -69,6 +67,7 @@ func (entity BaseEntity) BaseEntityEquals(other BaseEntity) bool {
 // InitBaseEntityParser Inits the EntityParsers for the BaseEntity attributes.
 func (entity *BaseEntity) InitBaseEntityParser() {
 	entity.On = true
+	entity.Visible = true
 	entity.Init(map[int]core.TypeParser{
 		5:  core.NewStringTypeParserToVar(&entity.Handle),
 		6:  core.NewStringTypeParserToVar(&entity.LineTypeName),

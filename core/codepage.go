@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-var codepages = map[string]string{
+var codePages = map[string]string{
 	"874":  "cp874",  // Thai,
 	"932":  "cp932",  // Japanese
 	"936":  "gbk",    // UnifiedChinese
@@ -21,9 +21,9 @@ var codepages = map[string]string{
 	"1258": "cp1258", // Vietnam
 }
 
-func toEncoding(dxfcodepage string) string {
-	for codepage, encoding := range codepages {
-		if strings.HasSuffix(dxfcodepage, codepage) {
+func toEncoding(dxfCodePage string) string {
+	for codePage, encoding := range codePages {
+		if strings.HasSuffix(dxfCodePage, codePage) {
 			return encoding
 		}
 	}

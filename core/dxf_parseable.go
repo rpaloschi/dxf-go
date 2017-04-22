@@ -136,7 +136,6 @@ func (element *DxfParseable) Update(parsers map[int]TypeParser) {
 			element.tagParsers[key] = value
 		}
 	}
-	element.tagParsers = parsers
 }
 
 // Parse parses the slice of tags using the configured parser map.
