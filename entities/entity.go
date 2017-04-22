@@ -37,7 +37,7 @@ type BaseEntity struct {
 	LineWeight    int
 	LineTypeScale float64
 	Visible       bool
-	ColorBytes    int32
+	TrueColor     core.TrueColor
 	ColorName     string
 	Transparency  int
 	ShadowMode    ShadowMode
@@ -58,7 +58,7 @@ func (entity BaseEntity) Equals(other BaseEntity) bool {
 		entity.LineWeight == other.LineWeight &&
 		core.FloatEquals(entity.LineTypeScale, other.LineTypeScale) &&
 		entity.Visible == other.Visible &&
-		entity.ColorBytes == other.ColorBytes &&
+		entity.TrueColor == other.TrueColor &&
 		entity.ColorName == other.ColorName &&
 		entity.Transparency == other.Transparency &&
 		entity.ShadowMode == other.ShadowMode
@@ -94,7 +94,7 @@ func (entity *BaseEntity) InitBaseEntityParser() {
 		410: core.NewStringTypeParserToVar(&entity.LayoutTabName),
 
 		420: core.NewIntTypeParser(func(value int) {
-			entity.ColorBytes = int32(value)
+			entity.TrueColor = core.TrueColor(value)
 		}),
 		430: core.NewStringTypeParserToVar(&entity.ColorName),
 		440: core.NewIntTypeParserToVar(&entity.Transparency),
