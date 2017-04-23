@@ -2,6 +2,7 @@ package entities
 
 import (
 	"github.com/rpaloschi/dxf-go/core"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"strings"
 	"testing"
@@ -76,6 +77,44 @@ func (suite *VertexTestSuite) TestVertexNotEqualToDifferentType() {
 
 func TestVertexTestSuite(t *testing.T) {
 	suite.Run(t, new(VertexTestSuite))
+}
+
+func TestVertexSliceEquality(t *testing.T) {
+	testCases := []struct {
+		p1     VertexSlice
+		p2     VertexSlice
+		equals bool
+	}{
+		{
+			VertexSlice{},
+			VertexSlice{},
+			true,
+		},
+		{
+			VertexSlice{&Vertex{}},
+			VertexSlice{&Vertex{}},
+			true,
+		},
+		{
+			VertexSlice{&Vertex{Id: 1}, &Vertex{Id: 2}},
+			VertexSlice{&Vertex{Id: 1}, &Vertex{Id: 2}},
+			true,
+		},
+		{
+			VertexSlice{&Vertex{Id: 1}},
+			VertexSlice{},
+			false,
+		},
+		{
+			VertexSlice{&Vertex{Id: 1}, &Vertex{Id: 2}},
+			VertexSlice{&Vertex{Id: 2}, &Vertex{Id: 1}},
+			false,
+		},
+	}
+
+	for i, test := range testCases {
+		assert.Equal(t, test.equals, test.p1.Equals(test.p2), "Test index %v", i)
+	}
 }
 
 const testMinimalVertex = `  0

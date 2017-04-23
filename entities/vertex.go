@@ -78,3 +78,23 @@ func NewVertex(tags core.TagSlice) (*Vertex, error) {
 	err := vertex.Parse(tags)
 	return vertex, err
 }
+
+// VertexSlice a slice of Vertex objects.
+type VertexSlice []*Vertex
+
+// Equals Compares two Vertices for equality.
+func (v VertexSlice) Equals(other VertexSlice) bool {
+	if len(v) != len(other) {
+		return false
+	}
+
+	for i, vertex := range v {
+		otherVertex := other[i]
+
+		if !vertex.Equals(otherVertex) {
+			return false
+		}
+	}
+
+	return true
+}
