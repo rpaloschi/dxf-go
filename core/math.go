@@ -12,3 +12,23 @@ const MinFloatDelta = 0.001
 func FloatEquals(a float64, b float64) bool {
 	return math.Abs(a-b) < MinFloatDelta
 }
+
+// FloatSliceEquals compares two slices of floats for equality.
+// The slices are considered equals if both contains the same number of
+// elements and FloatEquals returns true for all pairs of floats at the
+// same index.
+func FloatSliceEquals(a []float64, b []float64) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i, aValue := range a {
+		bValue := b[i]
+
+		if !FloatEquals(aValue, bValue) {
+			return false
+		}
+	}
+
+	return true
+}
