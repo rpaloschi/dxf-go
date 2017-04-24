@@ -12,7 +12,7 @@ func TestFloatEquals(t *testing.T) {
 		equals bool
 	}{
 		{1.1, 1.1, true},
-		{1.001, 1.0009, true},
+		{1.0000000001, 1.00000000009, true},
 		{1.1, 2.0, false},
 	}
 
