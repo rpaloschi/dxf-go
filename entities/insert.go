@@ -64,7 +64,7 @@ func NewInsert(tags core.TagSlice) (*Insert, error) {
 	insert.RowCount = 1
 	insert.ColumnSpacing = 0.0
 	insert.RowSpacing = 0.0
-	insert.Entities = make([]Entity, 0)
+	insert.Entities = make(EntitySlice, 0)
 	insert.ExtrusionDirection = core.Point{X: 0.0, Y: 0.0, Z: 1.0}
 
 	insert.InitBaseEntityParser()
