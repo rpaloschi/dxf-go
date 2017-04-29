@@ -24,10 +24,13 @@ func (suite *PolylineTestSuite) TestMinimalPolyline() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalPolyline))
-	arc, err := NewPolyline(core.TagSlice(core.AllTags(next)))
+	polyline, err := NewPolyline(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(polyline))
+
+	suite.False(polyline.IsSeqEnd())
+	suite.True(polyline.HasNestedEntities())
 }
 
 func (suite *PolylineTestSuite) TestPolylineAllAttribs() {
@@ -71,14 +74,41 @@ func (suite *PolylineTestSuite) TestPolylineAllAttribs() {
 	}
 
 	next := core.Tagger(strings.NewReader(testPolylineAllAttribs))
-	arc, err := NewPolyline(core.TagSlice(core.AllTags(next)))
+	polyline, err := NewPolyline(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(polyline))
 }
 
 func (suite *PolylineTestSuite) TestPolylineNotEqualToDifferentType() {
 	suite.False(Polyline{}.Equals(core.NewIntegerValue(0)))
+}
+
+func (suite *PolylineTestSuite) TestAddNestedEntities() {
+	expected := Polyline{
+		BaseEntity: BaseEntity{
+			Handle:    "3E5",
+			LayerName: "0",
+			On:        true,
+			Visible:   true,
+		},
+		Vertices: VertexSlice{
+			&Vertex{Location: core.Point{X: 1.5, Y: 2.7}},
+			&Vertex{Location: core.Point{X: 10.4, Y: 56.1}},
+		},
+		ExtrusionDirection: core.Point{X: 0.0, Y: 0.0, Z: 1.0},
+	}
+
+	next := core.Tagger(strings.NewReader(testMinimalPolyline))
+	polyline, _ := NewPolyline(core.TagSlice(core.AllTags(next)))
+
+	polyline.AddNestedEntities([]Entity{
+		&Vertex{Location: core.Point{X: 1.5, Y: 2.7}},
+		&SeqEnd{},
+		&Vertex{Location: core.Point{X: 10.4, Y: 56.1}},
+	})
+
+	suite.True(expected.Equals(polyline))
 }
 
 func TestPolylineTestSuite(t *testing.T) {

@@ -1,6 +1,9 @@
 package entities
 
-import "github.com/rpaloschi/dxf-go/core"
+import (
+	"fmt"
+	"github.com/rpaloschi/dxf-go/core"
+)
 
 // Polyline Entity representation
 type Polyline struct {
@@ -63,6 +66,22 @@ func (p Polyline) Equals(other core.DxfElement) bool {
 	return false
 }
 
+func (p Polyline) HasNestedEntities() bool {
+	return true
+}
+
+func (p *Polyline) AddNestedEntities(entities []Entity) {
+	for _, entity := range entities {
+		if vertex, ok := entity.(*Vertex); ok {
+			p.Vertices = append(p.Vertices, vertex)
+		} else {
+			fmt.Printf(
+				"Skipping entity %v. Polylines can only contain Vertex entities.",
+				entity)
+		}
+	}
+}
+
 const closedPolylineBit = 0x1
 const curveFitVerticesAddedBit = 0x2
 const splineFitVerticesAddedBit = 0x4
@@ -77,6 +96,7 @@ func NewPolyline(tags core.TagSlice) (*Polyline, error) {
 	polyline := new(Polyline)
 
 	// set defaults
+	polyline.Vertices = make(VertexSlice, 0)
 	polyline.ExtrusionDirection = core.Point{X: 0.0, Y: 0.0, Z: 1.0}
 
 	polyline.InitBaseEntityParser()
