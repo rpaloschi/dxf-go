@@ -4,6 +4,7 @@ import (
 	"github.com/rpaloschi/dxf-go/core"
 )
 
+// Entity all entities should implement this interface.
 type Entity interface {
 	core.DxfElement
 	IsSeqEnd() bool
@@ -11,20 +12,29 @@ type Entity interface {
 	AddNestedEntities(entities EntitySlice)
 }
 
+// RegularEntity most of the Entities will return the same values for
+// those APIs, this creates a default implementation that will be added to
+// the BaseEntity class so that only that classes that need a different
+// implementation need to overwrite it.
 type RegularEntity struct{}
 
+// IsSeqEnd a RegularEntity is not a SeqEnd entity.
 func (r RegularEntity) IsSeqEnd() bool {
 	return false
 }
 
+// HasNestedEntities a RegularEntity has no NestedEntities.
 func (r RegularEntity) HasNestedEntities() bool {
 	return false
 }
 
+// AddNestedEntities a default empty implementation just to implement the interface.
 func (r RegularEntity) AddNestedEntities(entities EntitySlice) {}
 
+// EntitySlice a slice of Entity objects.
 type EntitySlice []Entity
 
+// Equals compares the EntitySlice to the other for equality.
 func (e EntitySlice) Equals(other EntitySlice) bool {
 	if len(e) != len(other) {
 		return false

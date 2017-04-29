@@ -43,10 +43,13 @@ func (i Insert) Equals(other core.DxfElement) bool {
 	return false
 }
 
+// HasNestedEntities a Insert will have nested entities if the AttributesFollow
+// value is set.
 func (i Insert) HasNestedEntities() bool {
 	return i.AttributesFollow
 }
 
+// AddNestedEntities Add a slice of Entities as nested Entities.
 func (i *Insert) AddNestedEntities(entities EntitySlice) {
 	i.Entities = entities
 }

@@ -6,15 +6,16 @@ import (
 	"github.com/rpaloschi/dxf-go/entities"
 )
 
+// EntitiesSection representation.
 type EntitiesSection struct {
-	entities entities.EntitySlice
+	Entities entities.EntitySlice
 }
 
 // Equals Compare two EntitiesSection for equality
 func (e EntitiesSection) Equals(other core.DxfElement) bool {
 	if otherSection, ok := other.(*EntitiesSection); ok {
-		for i, entity := range e.entities {
-			otherEntity := otherSection.entities[i]
+		for i, entity := range e.Entities {
+			otherEntity := otherSection.Entities[i]
 			if !entity.Equals(otherEntity) {
 				return false
 			}
@@ -48,7 +49,7 @@ func NewEntitiesSection(tags core.TagSlice) (*EntitiesSection, error) {
 			if accumulator != nil {
 				if entity.IsSeqEnd() {
 					accumulator.Stop()
-					section.entities = append(section.entities, accumulator.parent)
+					section.Entities = append(section.Entities, accumulator.parent)
 					accumulator = nil
 				} else {
 					accumulator.entities = append(accumulator.entities, entity)
@@ -56,7 +57,7 @@ func NewEntitiesSection(tags core.TagSlice) (*EntitiesSection, error) {
 			} else if entity.HasNestedEntities() {
 				accumulator = newEntityAccumulator(entity)
 			} else {
-				section.entities = append(section.entities, entity)
+				section.Entities = append(section.Entities, entity)
 			}
 		} else {
 			fmt.Printf("Unsupported Entity Type: %v", entityType)

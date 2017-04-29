@@ -66,10 +66,13 @@ func (p Polyline) Equals(other core.DxfElement) bool {
 	return false
 }
 
+// HasNestedEntities a Polyline will have nested entities.
 func (p Polyline) HasNestedEntities() bool {
 	return true
 }
 
+// AddNestedEntities a Polyline will contain only Vertex as nested entities,
+// other types are simply ignored.
 func (p *Polyline) AddNestedEntities(entities EntitySlice) {
 	for _, entity := range entities {
 		if vertex, ok := entity.(*Vertex); ok {

@@ -18,7 +18,7 @@ func TestNewEntitiesSection(t *testing.T) {
 	}
 
 	expected := EntitiesSection{
-		entities: entities.EntitySlice{
+		Entities: entities.EntitySlice{
 			&entities.Arc{
 				BaseEntity:         base,
 				Center:             core.Point{X: 1.1, Y: 1.2, Z: 1.3},
@@ -131,7 +131,7 @@ func TestNewEntitiesSection(t *testing.T) {
 
 func TestNewEntitiesSectionInvalidEntityIsIgnored(t *testing.T) {
 	expected := EntitiesSection{
-		entities: entities.EntitySlice{
+		Entities: entities.EntitySlice{
 			&entities.Line{
 				BaseEntity: entities.BaseEntity{
 					Handle:    "LH",
@@ -193,12 +193,12 @@ func TestEntitiesSectionEquality(t *testing.T) {
 		},
 		{
 			es1: EntitiesSection{
-				entities: entities.EntitySlice{
+				Entities: entities.EntitySlice{
 					entities.Arc{},
 				},
 			},
 			es2: EntitiesSection{
-				entities: entities.EntitySlice{
+				Entities: entities.EntitySlice{
 					entities.SeqEnd{},
 				},
 			},
