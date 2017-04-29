@@ -70,7 +70,7 @@ func (p Polyline) HasNestedEntities() bool {
 	return true
 }
 
-func (p *Polyline) AddNestedEntities(entities []Entity) {
+func (p *Polyline) AddNestedEntities(entities EntitySlice) {
 	for _, entity := range entities {
 		if vertex, ok := entity.(*Vertex); ok {
 			p.Vertices = append(p.Vertices, vertex)

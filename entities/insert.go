@@ -1,6 +1,8 @@
 package entities
 
-import "github.com/rpaloschi/dxf-go/core"
+import (
+	"github.com/rpaloschi/dxf-go/core"
+)
 
 // Insert Entity representation
 type Insert struct {
@@ -15,6 +17,8 @@ type Insert struct {
 	RowCount           int
 	ColumnSpacing      float64
 	RowSpacing         float64
+	AttributesFollow   bool
+	Entities           EntitySlice
 	ExtrusionDirection core.Point
 }
 
@@ -32,9 +36,19 @@ func (i Insert) Equals(other core.DxfElement) bool {
 			i.RowCount == otherInsert.RowCount &&
 			core.FloatEquals(i.ColumnSpacing, otherInsert.ColumnSpacing) &&
 			core.FloatEquals(i.RowSpacing, otherInsert.RowSpacing) &&
+			i.AttributesFollow == otherInsert.AttributesFollow &&
+			i.Entities.Equals(otherInsert.Entities) &&
 			i.ExtrusionDirection.Equals(otherInsert.ExtrusionDirection)
 	}
 	return false
+}
+
+func (i Insert) HasNestedEntities() bool {
+	return i.AttributesFollow
+}
+
+func (i *Insert) AddNestedEntities(entities EntitySlice) {
+	i.Entities = entities
 }
 
 // NewInsert builds a new Insert from a slice of Tags.
@@ -50,20 +64,24 @@ func NewInsert(tags core.TagSlice) (*Insert, error) {
 	insert.RowCount = 1
 	insert.ColumnSpacing = 0.0
 	insert.RowSpacing = 0.0
+	insert.Entities = make([]Entity, 0)
 	insert.ExtrusionDirection = core.Point{X: 0.0, Y: 0.0, Z: 1.0}
 
 	insert.InitBaseEntityParser()
 	insert.Update(map[int]core.TypeParser{
-		2:   core.NewStringTypeParserToVar(&insert.BlockName),
-		10:  core.NewFloatTypeParserToVar(&insert.InsertionPoint.X),
-		20:  core.NewFloatTypeParserToVar(&insert.InsertionPoint.Y),
-		30:  core.NewFloatTypeParserToVar(&insert.InsertionPoint.Z),
-		41:  core.NewFloatTypeParserToVar(&insert.ScaleFactorX),
-		42:  core.NewFloatTypeParserToVar(&insert.ScaleFactorY),
-		43:  core.NewFloatTypeParserToVar(&insert.ScaleFactorZ),
-		44:  core.NewFloatTypeParserToVar(&insert.ColumnSpacing),
-		45:  core.NewFloatTypeParserToVar(&insert.RowSpacing),
-		50:  core.NewFloatTypeParserToVar(&insert.RotationAngle),
+		2:  core.NewStringTypeParserToVar(&insert.BlockName),
+		10: core.NewFloatTypeParserToVar(&insert.InsertionPoint.X),
+		20: core.NewFloatTypeParserToVar(&insert.InsertionPoint.Y),
+		30: core.NewFloatTypeParserToVar(&insert.InsertionPoint.Z),
+		41: core.NewFloatTypeParserToVar(&insert.ScaleFactorX),
+		42: core.NewFloatTypeParserToVar(&insert.ScaleFactorY),
+		43: core.NewFloatTypeParserToVar(&insert.ScaleFactorZ),
+		44: core.NewFloatTypeParserToVar(&insert.ColumnSpacing),
+		45: core.NewFloatTypeParserToVar(&insert.RowSpacing),
+		50: core.NewFloatTypeParserToVar(&insert.RotationAngle),
+		66: core.NewIntTypeParser(func(value int) {
+			insert.AttributesFollow = value == 1
+		}),
 		70:  core.NewIntTypeParserToVar(&insert.ColumnCount),
 		71:  core.NewIntTypeParserToVar(&insert.RowCount),
 		210: core.NewFloatTypeParserToVar(&insert.ExtrusionDirection.X),

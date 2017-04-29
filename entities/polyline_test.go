@@ -102,7 +102,7 @@ func (suite *PolylineTestSuite) TestAddNestedEntities() {
 	next := core.Tagger(strings.NewReader(testMinimalPolyline))
 	polyline, _ := NewPolyline(core.TagSlice(core.AllTags(next)))
 
-	polyline.AddNestedEntities([]Entity{
+	polyline.AddNestedEntities(EntitySlice{
 		&Vertex{Location: core.Point{X: 1.5, Y: 2.7}},
 		&SeqEnd{},
 		&Vertex{Location: core.Point{X: 10.4, Y: 56.1}},

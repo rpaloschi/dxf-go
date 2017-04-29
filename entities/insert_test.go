@@ -32,10 +32,13 @@ func (suite *InsertTestSuite) TestMinimalInsert() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalInsert))
-	arc, err := NewInsert(core.TagSlice(core.AllTags(next)))
+	insert, err := NewInsert(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(insert))
+
+	suite.False(insert.IsSeqEnd())
+	suite.False(insert.HasNestedEntities())
 }
 
 func (suite *InsertTestSuite) TestInsertAllAttribs() {
@@ -67,14 +70,16 @@ func (suite *InsertTestSuite) TestInsertAllAttribs() {
 		RowCount:           3,
 		ColumnSpacing:      6.0,
 		RowSpacing:         7.0,
+		AttributesFollow:   true,
 		ExtrusionDirection: core.Point{X: 32.1, Y: 12.6, Z: 95.1},
 	}
 
 	next := core.Tagger(strings.NewReader(testInsertAllAttribs))
-	arc, err := NewInsert(core.TagSlice(core.AllTags(next)))
+	insert, err := NewInsert(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(insert))
+	suite.True(insert.HasNestedEntities())
 }
 
 func (suite *InsertTestSuite) TestInsertOff() {
@@ -97,14 +102,53 @@ func (suite *InsertTestSuite) TestInsertOff() {
 	}
 
 	next := core.Tagger(strings.NewReader(testInsertOff))
-	arc, err := NewInsert(core.TagSlice(core.AllTags(next)))
+	insert, err := NewInsert(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(insert))
 }
 
 func (suite *InsertTestSuite) TestInsertNotEqualToDifferentType() {
 	suite.False(Insert{}.Equals(core.NewIntegerValue(0)))
+}
+
+func (suite *InsertTestSuite) TestAddNestedEntities() {
+	expected := Insert{
+		BaseEntity: BaseEntity{
+			Handle:    "INS",
+			LayerName: "0",
+			On:        true,
+			Visible:   true,
+		},
+		InsertionPoint:   core.Point{X: 1.1, Y: 1.2, Z: 1.3},
+		ScaleFactorX:     1.0,
+		ScaleFactorY:     1.0,
+		ScaleFactorZ:     1.0,
+		RotationAngle:    0.0,
+		ColumnCount:      1,
+		RowCount:         1,
+		ColumnSpacing:    0.0,
+		RowSpacing:       0.0,
+		AttributesFollow: true,
+		Entities: EntitySlice{
+			&Vertex{Location: core.Point{X: 1.5, Y: 2.7}},
+			&SeqEnd{},
+			&Vertex{Location: core.Point{X: 10.4, Y: 56.1}},
+		},
+		ExtrusionDirection: core.Point{X: 0.0, Y: 0.0, Z: 1.0},
+	}
+
+	next := core.Tagger(strings.NewReader(testMinimalInsert))
+	insert, _ := NewInsert(core.TagSlice(core.AllTags(next)))
+
+	insert.AttributesFollow = true
+	insert.AddNestedEntities(EntitySlice{
+		&Vertex{Location: core.Point{X: 1.5, Y: 2.7}},
+		&SeqEnd{},
+		&Vertex{Location: core.Point{X: 10.4, Y: 56.1}},
+	})
+
+	suite.True(expected.Equals(insert))
 }
 
 func TestInsertTestSuite(t *testing.T) {
@@ -175,6 +219,8 @@ B1
 7
  50
 45
+ 66
+1
  70
 2
  71

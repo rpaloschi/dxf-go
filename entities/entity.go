@@ -8,7 +8,7 @@ type Entity interface {
 	core.DxfElement
 	IsSeqEnd() bool
 	HasNestedEntities() bool
-	AddNestedEntities(entities []Entity)
+	AddNestedEntities(entities EntitySlice)
 }
 
 type RegularEntity struct{}
@@ -21,7 +21,25 @@ func (r RegularEntity) HasNestedEntities() bool {
 	return false
 }
 
-func (r RegularEntity) AddNestedEntities(entities []Entity) {}
+func (r RegularEntity) AddNestedEntities(entities EntitySlice) {}
+
+type EntitySlice []Entity
+
+func (e EntitySlice) Equals(other EntitySlice) bool {
+	if len(e) != len(other) {
+		return false
+	}
+
+	for i, entity := range e {
+		otherEntity := other[i]
+
+		if !entity.Equals(otherEntity) {
+			return false
+		}
+	}
+
+	return true
+}
 
 // Space the Entity Space
 type Space int
