@@ -24,10 +24,13 @@ func (suite *VertexTestSuite) TestMinimalVertex() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalVertex))
-	arc, err := NewVertex(core.TagSlice(core.AllTags(next)))
+	vertex, err := NewVertex(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(vertex))
+
+	suite.False(vertex.IsSeqEnd())
+	suite.False(vertex.HasNestedEntities())
 }
 
 func (suite *VertexTestSuite) TestVertexAllAttribs() {
@@ -65,10 +68,10 @@ func (suite *VertexTestSuite) TestVertexAllAttribs() {
 	}
 
 	next := core.Tagger(strings.NewReader(testVertexAllAttribs))
-	arc, err := NewVertex(core.TagSlice(core.AllTags(next)))
+	vertex, err := NewVertex(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(vertex))
 }
 
 func (suite *VertexTestSuite) TestVertexNotEqualToDifferentType() {

@@ -24,10 +24,13 @@ func (suite *LWPolylineTestSuite) TestMinimalLWPolyline() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalLWPolyline))
-	arc, err := NewLWPolyline(core.TagSlice(core.AllTags(next)))
+	polyline, err := NewLWPolyline(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(polyline))
+
+	suite.False(polyline.IsSeqEnd())
+	suite.False(polyline.HasNestedEntities())
 }
 
 func (suite *LWPolylineTestSuite) TestLWPolylineAllAttribs() {
@@ -81,10 +84,10 @@ func (suite *LWPolylineTestSuite) TestLWPolylineAllAttribs() {
 	}
 
 	next := core.Tagger(strings.NewReader(testLWPolylineAllAttribs))
-	arc, err := NewLWPolyline(core.TagSlice(core.AllTags(next)))
+	polyline, err := NewLWPolyline(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(polyline))
 }
 
 func (suite *LWPolylineTestSuite) TestLWPolylineNotEqualToDifferentType() {

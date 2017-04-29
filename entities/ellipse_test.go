@@ -28,10 +28,13 @@ func (suite *EllipseTestSuite) TestMinimalEllipse() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalEllipse))
-	arc, err := NewEllipse(core.TagSlice(core.AllTags(next)))
+	ellipse, err := NewEllipse(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(ellipse))
+
+	suite.False(ellipse.IsSeqEnd())
+	suite.False(ellipse.HasNestedEntities())
 }
 
 func (suite *EllipseTestSuite) TestEllipseAllAttribs() {
@@ -62,10 +65,10 @@ func (suite *EllipseTestSuite) TestEllipseAllAttribs() {
 	}
 
 	next := core.Tagger(strings.NewReader(testEllipseAllAttribs))
-	arc, err := NewEllipse(core.TagSlice(core.AllTags(next)))
+	ellipse, err := NewEllipse(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(ellipse))
 }
 
 func (suite *EllipseTestSuite) TestEllipseOff() {
@@ -84,10 +87,10 @@ func (suite *EllipseTestSuite) TestEllipseOff() {
 	}
 
 	next := core.Tagger(strings.NewReader(testEllipseOff))
-	arc, err := NewEllipse(core.TagSlice(core.AllTags(next)))
+	ellipse, err := NewEllipse(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(ellipse))
 }
 
 func (suite *EllipseTestSuite) TestEllipseNotEqualToDifferentType() {

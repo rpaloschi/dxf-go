@@ -15,6 +15,11 @@ func (c SeqEnd) Equals(other core.DxfElement) bool {
 	return false
 }
 
+// IsSeqEnd should return true only for this type.
+func (c SeqEnd) IsSeqEnd() bool {
+	return true
+}
+
 // NewSeqEnd builds a new SeqEnd from a slice of Tags.
 func NewSeqEnd(tags core.TagSlice) (*SeqEnd, error) {
 	point := new(SeqEnd)

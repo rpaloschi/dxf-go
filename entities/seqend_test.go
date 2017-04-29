@@ -21,4 +21,7 @@ func TestSeqEnd(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, expected.Equals(seqend))
 	assert.False(t, SeqEnd{}.Equals(core.NewStringValue("SEQOTHER")))
+
+	assert.True(t, SeqEnd{}.IsSeqEnd())
+	assert.False(t, SeqEnd{}.HasNestedEntities())
 }

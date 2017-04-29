@@ -4,6 +4,25 @@ import (
 	"github.com/rpaloschi/dxf-go/core"
 )
 
+type Entity interface {
+	core.DxfElement
+	IsSeqEnd() bool
+	HasNestedEntities() bool
+	AddNestedEntities(entities []Entity)
+}
+
+type RegularEntity struct{}
+
+func (r RegularEntity) IsSeqEnd() bool {
+	return false
+}
+
+func (r RegularEntity) HasNestedEntities() bool {
+	return false
+}
+
+func (r RegularEntity) AddNestedEntities(entities []Entity) {}
+
 // Space the Entity Space
 type Space int
 
@@ -26,6 +45,7 @@ const (
 // New Entity types should be composed by it.
 type BaseEntity struct {
 	core.DxfParseable
+	RegularEntity
 	Handle        string
 	Owner         string
 	Space         Space

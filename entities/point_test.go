@@ -24,10 +24,13 @@ func (suite *PointTestSuite) TestMinimalPoint() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalPoint))
-	arc, err := NewPoint(core.TagSlice(core.AllTags(next)))
+	point, err := NewPoint(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(point))
+
+	suite.False(point.IsSeqEnd())
+	suite.False(point.HasNestedEntities())
 }
 
 func (suite *PointTestSuite) TestPointAllAttribs() {
@@ -56,10 +59,10 @@ func (suite *PointTestSuite) TestPointAllAttribs() {
 	}
 
 	next := core.Tagger(strings.NewReader(testPointAllAttribs))
-	arc, err := NewPoint(core.TagSlice(core.AllTags(next)))
+	point, err := NewPoint(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(point))
 }
 
 func (suite *PointTestSuite) TestPointNotEqualToDifferentType() {

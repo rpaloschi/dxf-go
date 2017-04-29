@@ -29,6 +29,9 @@ func (suite *TextTestSuite) TestMinimalText() {
 
 	suite.Nil(err)
 	suite.True(expected.Equals(text))
+
+	suite.False(text.IsSeqEnd())
+	suite.False(text.HasNestedEntities())
 }
 
 func (suite *TextTestSuite) TestTextAllAttribs() {

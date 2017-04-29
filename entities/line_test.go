@@ -25,10 +25,13 @@ func (suite *LineTestSuite) TestMinimalLine() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalLine))
-	arc, err := NewLine(core.TagSlice(core.AllTags(next)))
+	line, err := NewLine(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(line))
+
+	suite.False(line.IsSeqEnd())
+	suite.False(line.HasNestedEntities())
 }
 
 func (suite *LineTestSuite) TestLineAllAttribs() {
@@ -57,10 +60,10 @@ func (suite *LineTestSuite) TestLineAllAttribs() {
 	}
 
 	next := core.Tagger(strings.NewReader(testLineAllAttribs))
-	arc, err := NewLine(core.TagSlice(core.AllTags(next)))
+	line, err := NewLine(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(line))
 }
 
 func (suite *LineTestSuite) TestLineOff() {
@@ -76,10 +79,10 @@ func (suite *LineTestSuite) TestLineOff() {
 	}
 
 	next := core.Tagger(strings.NewReader(testLineOff))
-	arc, err := NewLine(core.TagSlice(core.AllTags(next)))
+	line, err := NewLine(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(line))
 }
 
 func (suite *LineTestSuite) TestLineNotEqualToDifferentType() {

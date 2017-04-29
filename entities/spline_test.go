@@ -33,6 +33,9 @@ func (suite *SplineTestSuite) TestMinimalSpline() {
 
 	suite.Nil(err)
 	suite.True(expected.Equals(spline))
+
+	suite.False(spline.IsSeqEnd())
+	suite.False(spline.HasNestedEntities())
 }
 
 func (suite *SplineTestSuite) TestSplineAllAttribs() {

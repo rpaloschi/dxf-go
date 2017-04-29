@@ -31,6 +31,9 @@ func (suite *ArcTestSuite) TestMinimalArc() {
 
 	suite.Nil(err)
 	suite.True(expected.Equals(arc))
+
+	suite.False(arc.IsSeqEnd())
+	suite.False(arc.HasNestedEntities())
 }
 
 func (suite *ArcTestSuite) TestArcAllAttribs() {

@@ -25,10 +25,13 @@ func (suite *CircleTestSuite) TestMinimalCircle() {
 	}
 
 	next := core.Tagger(strings.NewReader(testMinimalCircle))
-	arc, err := NewCircle(core.TagSlice(core.AllTags(next)))
+	circle, err := NewCircle(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(circle))
+
+	suite.False(circle.IsSeqEnd())
+	suite.False(circle.HasNestedEntities())
 }
 
 func (suite *CircleTestSuite) TestCircleAllAttribs() {
@@ -57,10 +60,10 @@ func (suite *CircleTestSuite) TestCircleAllAttribs() {
 	}
 
 	next := core.Tagger(strings.NewReader(testCircleAllAttribs))
-	arc, err := NewCircle(core.TagSlice(core.AllTags(next)))
+	circle, err := NewCircle(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(circle))
 }
 
 func (suite *CircleTestSuite) TestCircleOff() {
@@ -76,10 +79,10 @@ func (suite *CircleTestSuite) TestCircleOff() {
 	}
 
 	next := core.Tagger(strings.NewReader(testCircleOff))
-	arc, err := NewCircle(core.TagSlice(core.AllTags(next)))
+	circle, err := NewCircle(core.TagSlice(core.AllTags(next)))
 
 	suite.Nil(err)
-	suite.True(expected.Equals(arc))
+	suite.True(expected.Equals(circle))
 }
 
 func (suite *CircleTestSuite) TestCircleNotEqualToDifferentType() {
