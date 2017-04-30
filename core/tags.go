@@ -73,7 +73,7 @@ func Tagger(stream io.Reader) NextTagFunction {
 
 		charsToTrim := " \r\n"
 		counter += 2
-		if len(code) > 0 && len(value) > 0 {
+		if len(code) > 0 {
 			intCode, err := strconv.Atoi(strings.Trim(code, charsToTrim))
 			if err != nil {
 				return &NoneTag, err

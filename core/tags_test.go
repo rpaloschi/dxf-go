@@ -188,6 +188,16 @@ func (suite *TaggerTestSuite) TestEmptyStream() {
 	suite.Equal(nil, err)
 }
 
+func (suite *TaggerTestSuite) TestEmptyValueIsValid() {
+	expected := Tag{Code: 1, Value: NewStringValue("")}
+
+	next := Tagger(strings.NewReader("  1\n\n"))
+	tag, err := next()
+
+	suite.Equal(nil, err)
+	suite.True(expected.Equals(tag))
+}
+
 func (suite *TaggerTestSuite) TestNextTag() {
 	next := Tagger(strings.NewReader(regularDXF))
 	tag, err := next()
