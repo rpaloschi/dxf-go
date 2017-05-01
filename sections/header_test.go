@@ -121,17 +121,17 @@ func (suite *HeaderTestSuite) TestDuplicateTagsKey() {
 }
 
 func (suite *HeaderTestSuite) TestHeaderEquality() {
-	header1 := &HeaderSection{values: map[string]core.TagSlice{
+	header1 := &HeaderSection{Values: map[string]core.TagSlice{
 		"KEY1": {core.NewTag(0, core.NewStringValue("SECTION"))}}}
-	header2 := &HeaderSection{values: map[string]core.TagSlice{
+	header2 := &HeaderSection{Values: map[string]core.TagSlice{
 		"KEY1": {core.NewTag(0, core.NewStringValue("SECTION"))}}}
-	header3 := &HeaderSection{values: map[string]core.TagSlice{
+	header3 := &HeaderSection{Values: map[string]core.TagSlice{
 		"KEY2": {core.NewTag(10, core.NewFloatValue(20.17))},
 		"KEY3": {core.NewTag(20, core.NewFloatValue(1.1))}}}
-	header4 := &HeaderSection{values: map[string]core.TagSlice{
+	header4 := &HeaderSection{Values: map[string]core.TagSlice{
 		"KEY2": {core.NewTag(10, core.NewFloatValue(20.17))},
 		"KEY5": {core.NewTag(60, core.NewIntegerValue(2017))}}}
-	header5 := &HeaderSection{values: map[string]core.TagSlice{
+	header5 := &HeaderSection{Values: map[string]core.TagSlice{
 		"KEY1": {core.NewTag(0, core.NewStringValue("OTHER"))}}}
 
 	suite.True(header1.Equals(header2))
