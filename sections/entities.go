@@ -35,9 +35,21 @@ func NewEntitiesSection(tags core.TagSlice) (*EntitiesSection, error) {
 		return section, nil
 	}
 
-	// skip (0, 'SECTION') and (2, 'ENTITIES')
+	entities, err := NewEntityList(core.TagGroups(tags[2:len(tags)-1], 0))
+	if err != nil {
+		return nil, err
+	}
+	section.Entities = entities
+
+	return section, nil
+}
+
+// NewEntityList Parses a list of tag slices into entities. returns an EntitySlice.
+func NewEntityList(tags []core.TagSlice) (entities.EntitySlice, error) {
+	entityList := make(entities.EntitySlice, 0)
+
 	var accumulator *entityAccumulator
-	for _, group := range core.TagGroups(tags[2:len(tags)-1], 0) {
+	for _, group := range tags {
 		entityType := group[0].Value.ToString()
 
 		if factory, ok := entityFactory[entityType]; ok {
@@ -49,7 +61,7 @@ func NewEntitiesSection(tags core.TagSlice) (*EntitiesSection, error) {
 			if accumulator != nil {
 				if entity.IsSeqEnd() {
 					accumulator.Stop()
-					section.Entities = append(section.Entities, accumulator.parent)
+					entityList = append(entityList, accumulator.parent)
 					accumulator = nil
 				} else {
 					accumulator.entities = append(accumulator.entities, entity)
@@ -57,14 +69,14 @@ func NewEntitiesSection(tags core.TagSlice) (*EntitiesSection, error) {
 			} else if entity.HasNestedEntities() {
 				accumulator = newEntityAccumulator(entity)
 			} else {
-				section.Entities = append(section.Entities, entity)
+				entityList = append(entityList, entity)
 			}
 		} else {
 			fmt.Printf("Unsupported Entity Type: %v", entityType)
 		}
 	}
 
-	return section, nil
+	return entityList, nil
 }
 
 type entityAccumulator struct {

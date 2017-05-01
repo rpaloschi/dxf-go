@@ -148,7 +148,7 @@ func (element *DxfParseable) Parse(tags TagSlice) error {
 				return err
 			}
 		} else {
-			fmt.Printf("Discarding tag for Layer: %+v\n", tag.ToString())
+			fmt.Printf("Discarding tag: %+v\n", tag.ToString())
 		}
 	}
 	return nil
