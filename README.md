@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/rpaloschi/dxf-go.svg?branch=master)](https://travis-ci.org/rpaloschi/dxf-go)
 # DXF-go
 
 A DXF implementation for Golang.
