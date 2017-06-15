@@ -18,7 +18,7 @@ There is a lot to be done and help is appreciated.
 A sample usage:
 
 ```
-  file, err := os.Open(dxfPath) 
+        file, err := os.Open(dxfPath) 
 	if err != nil {
 		log.Fatal(err)
 	}
