@@ -15,28 +15,40 @@ There is a lot to be done and help is appreciated.
 
 ## Getting Started
 
-TODO
+A sample usage:
+
+```
+  file, err := os.Open(dxfPath) 
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc, err := document.DxfDocumentFromStream(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, block := range doc.Blocks {
+		for _, entity := range block.Entities {
+			if polyline, ok := entity.(*entities.Polyline); ok {
+				// process polyline here...
+			} else if lwpolyline, ok := entity.(*entities.LWPolyline); ok {
+				// process lwpolyline here...
+			}
+      //...
+		}
+	}
+```
 
 ### Prerequisites
 
-TODO
-
+ * Go (1.8+)
 
 ### Installing
 
-TODO
-
-## Running the tests
-
-TODO
-
-## Contributing
-
-TODO
-
-## Versioning
-
-TODO 
+```
+$ go get github.com/rpaloschi/dxf-go
+``` 
 
 ## Authors
 
