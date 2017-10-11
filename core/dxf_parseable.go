@@ -1,6 +1,8 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // TypeParser parses a specific DataType, returning an error or nil if the parsing was successful.
 type TypeParser interface {
@@ -148,7 +150,7 @@ func (element *DxfParseable) Parse(tags TagSlice) error {
 				return err
 			}
 		} else {
-			fmt.Printf("Discarding tag: %+v\n", tag.ToString())
+			Log.Printf("Discarding tag: %+v\n", tag.ToString())
 		}
 	}
 	return nil

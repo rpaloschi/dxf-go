@@ -1,7 +1,6 @@
 package sections
 
 import (
-	"fmt"
 	"github.com/rpaloschi/dxf-go/core"
 )
 
@@ -89,7 +88,7 @@ func NewTablesSection(tags core.TagSlice) (*TablesSection, error) {
 					return nil, err
 				}
 			} else {
-				fmt.Printf("Ignoring unknown table type: %+v\n", tableType)
+				core.Log.Printf("Ignoring unknown table type: %+v\n", tableType)
 			}
 		}
 	}
