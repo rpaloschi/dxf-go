@@ -1,7 +1,6 @@
 package sections
 
 import (
-	"fmt"
 	"github.com/rpaloschi/dxf-go/core"
 	"github.com/rpaloschi/dxf-go/entities"
 )
@@ -72,7 +71,7 @@ func NewEntityList(tags []core.TagSlice) (entities.EntitySlice, error) {
 				entityList = append(entityList, entity)
 			}
 		} else {
-			fmt.Printf("Unsupported Entity Type: %v", entityType)
+			core.Log.Printf("Unsupported Entity Type: %v", entityType)
 		}
 	}
 

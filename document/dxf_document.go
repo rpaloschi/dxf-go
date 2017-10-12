@@ -1,10 +1,10 @@
 package document
 
 import (
-	"fmt"
+	"io"
+
 	"github.com/rpaloschi/dxf-go/core"
 	"github.com/rpaloschi/dxf-go/sections"
-	"io"
 )
 
 // DxfDocument the representation of a full dxf document.
@@ -69,7 +69,7 @@ func DxfDocumentFromStream(stream io.Reader) (*DxfDocument, error) {
 				return nil, err
 			}
 		} else {
-			fmt.Printf("Ignoring unsupported Section type: %+v\n", sectionType)
+			core.Log.Printf("Ignoring unsupported Section type: %+v\n", sectionType)
 		}
 	}
 

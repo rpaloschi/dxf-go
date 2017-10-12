@@ -1,7 +1,6 @@
 package sections
 
 import (
-	"fmt"
 	"github.com/rpaloschi/dxf-go/core"
 )
 
@@ -99,9 +98,9 @@ func NewLineType(tags core.TagSlice) (*LineType, error) {
 		}),
 		75: core.NewIntTypeParser(func(flags int) {
 			if flags74 == 0 {
-				fmt.Print("WARNING! there should be no 75 Code tag if 74 value is 0\n")
+				core.Log.Print("WARNING! there should be no 75 Code tag if 74 value is 0\n")
 			} else if lineElement.IsTextString && flags != 0 {
-				fmt.Print("WARNING! Tag 75 should be 0 if 74 is a TextString\n")
+				core.Log.Print("WARNING! Tag 75 should be 0 if 74 is a TextString\n")
 			} else if lineElement.IsShape {
 				lineElement.ShapeNumber = flags
 			}
