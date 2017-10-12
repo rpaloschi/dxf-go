@@ -1,7 +1,6 @@
 package entities
 
 import (
-	"fmt"
 	"github.com/rpaloschi/dxf-go/core"
 )
 
@@ -78,7 +77,7 @@ func (p *Polyline) AddNestedEntities(entities EntitySlice) {
 		if vertex, ok := entity.(*Vertex); ok {
 			p.Vertices = append(p.Vertices, vertex)
 		} else {
-			fmt.Printf(
+			core.Log.Printf(
 				"Skipping entity %v. Polylines can only contain Vertex entities.",
 				entity)
 		}
