@@ -14,7 +14,7 @@ type LineElement struct {
 	AbsoluteRotation bool
 	IsTextString     bool
 	IsShape          bool
-	ShapeNumber      int
+	ShapeNumber      int64
 	Scale            float64
 	RotationAngle    float64
 	XOffset          float64
@@ -73,7 +73,7 @@ func NewLineType(tags core.TagSlice) (*LineType, error) {
 	ltype := new(LineType)
 	ltype.Pattern = make([]*LineElement, 0)
 
-	flags74 := 0
+	var flags74 int64
 	var lineElement *LineElement
 
 	ltype.Init(map[int]core.TypeParser{
@@ -88,7 +88,7 @@ func NewLineType(tags core.TagSlice) (*LineType, error) {
 			lineElement.Scale = 1.0
 			lineElement.Length = length
 		}),
-		74: core.NewIntTypeParser(func(flags int) {
+		74: core.NewIntTypeParser(func(flags int64) {
 			flags74 = flags
 			if flags74 > 0 {
 				lineElement.AbsoluteRotation = flags74&absRotationBit > 0
@@ -96,7 +96,7 @@ func NewLineType(tags core.TagSlice) (*LineType, error) {
 				lineElement.IsShape = flags74&elementShapeBit > 0
 			}
 		}),
-		75: core.NewIntTypeParser(func(flags int) {
+		75: core.NewIntTypeParser(func(flags int64) {
 			if flags74 == 0 {
 				core.Log.Print("WARNING! there should be no 75 Code tag if 74 value is 0\n")
 			} else if lineElement.IsTextString && flags != 0 {

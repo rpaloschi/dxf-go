@@ -55,19 +55,19 @@ func (s String) Equals(other DxfElement) bool {
 
 // Integer DataType implementation
 type Integer struct {
-	value int
+	value int64
 }
 
 // NewInteger creates a new Integer object with the provided value as a string
 func NewInteger(value string) (DataType, error) {
 	returnValue := new(Integer)
-	v, err := strconv.Atoi(value)
+	v, err := strconv.ParseInt(value, 10, 64)
 	returnValue.value = v
 	return returnValue, err
 }
 
 // NewIntegerValue creates a new Integer object with provided int.
-func NewIntegerValue(value int) *Integer {
+func NewIntegerValue(value int64) *Integer {
 	returnValue := new(Integer)
 	returnValue.value = value
 	return returnValue
@@ -75,7 +75,7 @@ func NewIntegerValue(value int) *Integer {
 
 // ToString returns a string representation of the value
 func (i Integer) ToString() string {
-	return strconv.Itoa(i.value)
+	return strconv.FormatInt(i.value, 10)
 }
 
 // Value returns the encapsulated value
@@ -140,8 +140,8 @@ func AsString(d DataType) (string, bool) {
 
 // AsInt is the acessor for an Integer DataType.
 // If d is Integer, it will return the (value, true), otherwise (0, false)
-func AsInt(d DataType) (int, bool) {
-	value, ok := d.Value().(int)
+func AsInt(d DataType) (int64, bool) {
+	value, ok := d.Value().(int64)
 	return value, ok
 }
 

@@ -17,7 +17,7 @@ type Vertex struct {
 	Is3dPolylineMesh         bool
 	IsPolyfaceMeshVertex     bool
 	CurveFitTangentDirection float64
-	Id                       int
+	Id                       int64
 }
 
 // Equals tests equality against another Vertex.
@@ -63,7 +63,7 @@ func NewVertex(tags core.TagSlice) (*Vertex, error) {
 		41: core.NewFloatTypeParserToVar(&vertex.EndWidth),
 		42: core.NewFloatTypeParserToVar(&vertex.Bulge),
 		50: core.NewFloatTypeParserToVar(&vertex.CurveFitTangentDirection),
-		70: core.NewIntTypeParser(func(flags int) {
+		70: core.NewIntTypeParser(func(flags int64) {
 			vertex.CreatedByCurveFitting = flags&extraVertexCurveFittingBit != 0
 			vertex.CurveFitTangentDefined = flags&curveFitTangentDefinedBit != 0
 			vertex.SplineVertex = flags&splineVertexCreatedBit != 0

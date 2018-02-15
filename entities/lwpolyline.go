@@ -43,11 +43,11 @@ func NewLWPolyline(tags core.TagSlice) (*LWPolyline, error) {
 
 	pointIndex := -1
 	polyline.Update(map[int]core.TypeParser{
-		70: core.NewIntTypeParser(func(flags int) {
+		70: core.NewIntTypeParser(func(flags int64) {
 			polyline.Closed = flags&closedBit != 0
 			polyline.Plinegen = flags&plinegenBit != 0
 		}),
-		90: core.NewIntTypeParser(func(value int) {
+		90: core.NewIntTypeParser(func(value int64) {
 			polyline.Points = make(LWPolyLinePointSlice, value)
 		}),
 		38: core.NewFloatTypeParserToVar(&polyline.Elevation),
@@ -60,7 +60,7 @@ func NewLWPolyline(tags core.TagSlice) (*LWPolyline, error) {
 		20: core.NewFloatTypeParser(func(y float64) {
 			polyline.Points[pointIndex].Point.Y = y
 		}),
-		91: core.NewIntTypeParser(func(value int) {
+		91: core.NewIntTypeParser(func(value int64) {
 			polyline.Points[pointIndex].Id = value
 		}),
 		40: core.NewFloatTypeParser(func(value float64) {
@@ -104,7 +104,7 @@ func (p LWPolyLinePointSlice) Equals(other LWPolyLinePointSlice) bool {
 // LWPolyLinePoint point and attributes in an LWPolyline.
 type LWPolyLinePoint struct {
 	Point         core.Point
-	Id            int
+	Id            int64
 	StartingWidth float64
 	EndWidth      float64
 	Bulge         float64

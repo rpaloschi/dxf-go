@@ -11,7 +11,7 @@ const frozenBit = 0x1
 type Layer struct {
 	core.DxfParseable
 	Name     string
-	Color    int
+	Color    int64
 	LineType string
 	Locked   bool
 	Frozen   bool
@@ -41,11 +41,11 @@ func NewLayer(tags core.TagSlice) (*Layer, error) {
 
 	layer.Init(map[int]core.TypeParser{
 		2: core.NewStringTypeParserToVar(&layer.Name),
-		70: core.NewIntTypeParser(func(flags int) {
+		70: core.NewIntTypeParser(func(flags int64) {
 			layer.Frozen = flags&frozenBit != 0
 			layer.Locked = flags&lockBit != 0
 		}),
-		62: core.NewIntTypeParser(func(color int) {
+		62: core.NewIntTypeParser(func(color int64) {
 			if color < 0 {
 				layer.On = false
 				layer.Color = -color

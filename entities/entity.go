@@ -81,13 +81,13 @@ type BaseEntity struct {
 	LayerName     string
 	LineTypeName  string
 	On            bool
-	Color         int
-	LineWeight    int
+	Color         int64
+	LineWeight    int64
 	LineTypeScale float64
 	Visible       bool
 	TrueColor     core.TrueColor
 	ColorName     string
-	Transparency  int
+	Transparency  int64
 	ShadowMode    ShadowMode
 }
 
@@ -121,27 +121,27 @@ func (entity *BaseEntity) InitBaseEntityParser() {
 		6:  core.NewStringTypeParserToVar(&entity.LineTypeName),
 		8:  core.NewStringTypeParserToVar(&entity.LayerName),
 		48: core.NewFloatTypeParserToVar(&entity.LineTypeScale),
-		60: core.NewIntTypeParser(func(value int) {
+		60: core.NewIntTypeParser(func(value int64) {
 			entity.Visible = value == 0
 		}),
-		62: core.NewIntTypeParser(func(value int) {
+		62: core.NewIntTypeParser(func(value int64) {
 			if value < 0 {
 				entity.On = false
 				value = -value
 			}
 			entity.Color = value
 		}),
-		67: core.NewIntTypeParser(func(value int) {
+		67: core.NewIntTypeParser(func(value int64) {
 			entity.Space = Space(value)
 		}),
-		284: core.NewIntTypeParser(func(value int) {
+		284: core.NewIntTypeParser(func(value int64) {
 			entity.ShadowMode = ShadowMode(value)
 		}),
 		330: core.NewStringTypeParserToVar(&entity.Owner),
 		370: core.NewIntTypeParserToVar(&entity.LineWeight),
 		410: core.NewStringTypeParserToVar(&entity.LayoutTabName),
 
-		420: core.NewIntTypeParser(func(value int) {
+		420: core.NewIntTypeParser(func(value int64) {
 			entity.TrueColor = core.TrueColor(value)
 		}),
 		430: core.NewStringTypeParserToVar(&entity.ColorName),
