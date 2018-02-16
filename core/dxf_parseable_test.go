@@ -1,9 +1,10 @@
 package core
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"testing"
 )
 
 func TestStringTypeParser(t *testing.T) {
@@ -23,7 +24,7 @@ func TestStringTypeParser(t *testing.T) {
 func TestStringTypeParserInvalidType(t *testing.T) {
 	parser := NewStringTypeParser(func(value string) {})
 
-	expected := 1000
+	expected := int64(1000)
 	err := parser.Parse(NewIntegerValue(expected))
 
 	assert.Equal(t,
@@ -41,13 +42,13 @@ func TestStringTypeParserToVar(t *testing.T) {
 }
 
 func TestIntTypeParser(t *testing.T) {
-	var returned int
+	var returned int64
 
-	parser := NewIntTypeParser(func(value int) {
+	parser := NewIntTypeParser(func(value int64) {
 		returned = value
 	})
 
-	expected := 1000
+	expected := int64(1000)
 	err := parser.Parse(NewIntegerValue(expected))
 
 	assert.Nil(t, err)
@@ -55,7 +56,7 @@ func TestIntTypeParser(t *testing.T) {
 }
 
 func TestIntTypeParserInvalidType(t *testing.T) {
-	parser := NewIntTypeParser(func(value int) {})
+	parser := NewIntTypeParser(func(value int64) {})
 
 	expected := 10.50
 	err := parser.Parse(NewFloatValue(expected))
@@ -66,8 +67,8 @@ func TestIntTypeParserInvalidType(t *testing.T) {
 }
 
 func TestIntTypeParserToVar(t *testing.T) {
-	var returned int
-	expected := 1234
+	var returned int64
+	expected := int64(1234)
 	err := NewIntTypeParserToVar(&returned).Parse(NewIntegerValue(expected))
 
 	assert.Nil(t, err)
@@ -112,7 +113,7 @@ type DxfElementTestSuite struct {
 	suite.Suite
 	element     *DxfParseable
 	stringValue string
-	intValue    int
+	intValue    int64
 	floatValue  float64
 }
 
@@ -136,7 +137,7 @@ func (suite *DxfElementTestSuite) TestValidTags() {
 	suite.Nil(err)
 	suite.Equal("Fifteen", suite.stringValue)
 	suite.Equal(1.5, suite.floatValue)
-	suite.Equal(15, suite.intValue)
+	suite.Equal(int64(15), suite.intValue)
 }
 
 func (suite *DxfElementTestSuite) TestUpdate() {
@@ -176,7 +177,7 @@ func (suite *DxfElementTestSuite) TestUnregisteredTagIsIgnored() {
 
 	err := suite.element.Parse(tags)
 	suite.Nil(err)
-	suite.Equal(15, suite.intValue)
+	suite.Equal(int64(15), suite.intValue)
 }
 
 func TestDxfElementTestSuite(t *testing.T) {

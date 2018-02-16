@@ -41,7 +41,7 @@ func (suite *DataTypesTestSuite) TestAsString() {
 func (suite *DataTypesTestSuite) TestAsInteger() {
 	value, ok := AsInt(suite.intType)
 	suite.True(ok)
-	suite.Equal(2017, value)
+	suite.Equal(int64(2017), value)
 
 	_, ok = AsInt(suite.strType)
 	suite.False(ok)
