@@ -1,10 +1,11 @@
 package sections
 
 import (
-	"github.com/rpaloschi/dxf-go/core"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
+
+	"github.com/rpaloschi/dxf-go/core"
+	"github.com/stretchr/testify/assert"
 )
 
 const dxfLayer = `  2
@@ -31,7 +32,7 @@ func TestLayer(t *testing.T) {
 	assert.True(t, layer.Locked)
 	assert.True(t, layer.Frozen)
 	assert.True(t, layer.On)
-	assert.Equal(t, 10, layer.Color)
+	assert.Equal(t, int64(10), layer.Color)
 	assert.Equal(t, "CONTINUOUS", layer.LineType)
 }
 
@@ -43,7 +44,7 @@ func TestLayerDefaultValues(t *testing.T) {
 	assert.False(t, layer.Locked)
 	assert.False(t, layer.Frozen)
 	assert.True(t, layer.On)
-	assert.Equal(t, 7, layer.Color)
+	assert.Equal(t, int64(7), layer.Color)
 	assert.Equal(t, "", layer.LineType)
 }
 
@@ -63,7 +64,7 @@ func TestOffLayer(t *testing.T) {
 	layer, _ := layerFromDxfFragment("  62\n-4")
 
 	assert.False(t, layer.On)
-	assert.Equal(t, 4, layer.Color)
+	assert.Equal(t, int64(4), layer.Color)
 }
 
 const sampleLayerTable = `  0

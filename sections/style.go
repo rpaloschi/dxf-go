@@ -56,11 +56,11 @@ func NewStyle(tags core.TagSlice) (*Style, error) {
 		40: core.NewFloatTypeParserToVar(&style.Height),
 		41: core.NewFloatTypeParserToVar(&style.Width),
 		50: core.NewFloatTypeParserToVar(&style.Oblique),
-		70: core.NewIntTypeParser(func(flags int) {
+		70: core.NewIntTypeParser(func(flags int64) {
 			style.IsShape = flags&shapeBit != 0
 			style.IsVerticalText = flags&verticalTextBit != 0
 		}),
-		71: core.NewIntTypeParser(func(flags int) {
+		71: core.NewIntTypeParser(func(flags int64) {
 			style.IsBackwards = flags&backwardsBit != 0
 			style.IsUpsideDown = flags&upsideDownBit != 0
 		}),

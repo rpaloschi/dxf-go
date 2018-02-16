@@ -19,10 +19,10 @@ type Polyline struct {
 	LineTypeParentAround   bool
 	DefaultStartWidth      float64
 	DefaultEndWidth        float64
-	VertexCountM           int
-	VertexCountN           int
-	SmoothDensityM         int
-	SmoothDensityN         int
+	VertexCountM           int64
+	VertexCountN           int64
+	SmoothDensityM         int64
+	SmoothDensityN         int64
 	SmoothSurface          SmoothSurfaceType
 	ExtrusionDirection     core.Point
 	Vertices               VertexSlice
@@ -107,7 +107,7 @@ func NewPolyline(tags core.TagSlice) (*Polyline, error) {
 		39: core.NewFloatTypeParserToVar(&polyline.Thickness),
 		40: core.NewFloatTypeParserToVar(&polyline.DefaultStartWidth),
 		41: core.NewFloatTypeParserToVar(&polyline.DefaultEndWidth),
-		70: core.NewIntTypeParser(func(flags int) {
+		70: core.NewIntTypeParser(func(flags int64) {
 			polyline.Closed = flags&closedPolylineBit != 0
 			polyline.CurveFitVerticesAdded = flags&curveFitVerticesAddedBit != 0
 			polyline.SplineFitVerticesAdded = flags&splineFitVerticesAddedBit != 0
@@ -121,7 +121,7 @@ func NewPolyline(tags core.TagSlice) (*Polyline, error) {
 		72: core.NewIntTypeParserToVar(&polyline.VertexCountN),
 		73: core.NewIntTypeParserToVar(&polyline.SmoothDensityM),
 		74: core.NewIntTypeParserToVar(&polyline.SmoothDensityN),
-		75: core.NewIntTypeParser(func(value int) {
+		75: core.NewIntTypeParser(func(value int64) {
 			polyline.SmoothSurface = SmoothSurfaceType(value)
 		}),
 		210: core.NewFloatTypeParserToVar(&polyline.ExtrusionDirection.X),

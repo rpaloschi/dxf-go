@@ -2,6 +2,7 @@ package core
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -78,7 +79,12 @@ func Tagger(stream io.Reader) NextTagFunction {
 			if err != nil {
 				return &NoneTag, err
 			}
-			valueType, _ := groupCodeTypes[intCode](strings.Trim(value, charsToTrim))
+			f, ok := groupCodeTypes[intCode]
+			if !ok {
+				Log.Printf("Skipping unknown groupCodeType: %v (value: %v)", intCode, strings.Trim(value, charsToTrim))
+				return &NoneTag, errors.New("unknown groupCodeType")
+			}
+			valueType, _ := f(strings.Trim(value, charsToTrim))
 			tag := new(Tag)
 			tag.Code = intCode
 			tag.Value = valueType
@@ -300,7 +306,7 @@ func init() {
 		groupCodeTypes[code] = NewFloat
 	}
 
-	for code := 170; code < 180; code++ {
+	for code := 160; code < 180; code++ {
 		groupCodeTypes[code] = NewInteger
 	}
 

@@ -1,11 +1,12 @@
 package sections
 
 import (
+	"strings"
+	"testing"
+
 	"github.com/davecgh/go-spew/spew"
 	"github.com/rpaloschi/dxf-go/core"
 	"github.com/stretchr/testify/assert"
-	"strings"
-	"testing"
 )
 
 func lineTypeFromDxfFragment(fragment string) (*LineType, error) {
@@ -298,7 +299,7 @@ func TestParseLineTypeShapeNr(t *testing.T) {
 	lineType, err := lineTypeFromDxfFragment(dxfLineTypeShapeNrNoShapeOrText)
 
 	assert.Nil(t, err)
-	assert.Equal(t, 0, lineType.Pattern[0].ShapeNumber)
+	assert.Equal(t, int64(0), lineType.Pattern[0].ShapeNumber)
 }
 
 const dxfLineTypeShapeNrNot0AndText = `  0
@@ -329,7 +330,7 @@ func TestParseLineTypeShapeNrWhenIsText(t *testing.T) {
 	lineType, err := lineTypeFromDxfFragment(dxfLineTypeShapeNrNot0AndText)
 
 	assert.Nil(t, err)
-	assert.Equal(t, 0, lineType.Pattern[0].ShapeNumber)
+	assert.Equal(t, int64(0), lineType.Pattern[0].ShapeNumber)
 }
 
 func TestCompareLineTypeWrongType(t *testing.T) {

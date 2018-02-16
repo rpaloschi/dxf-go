@@ -11,7 +11,7 @@ type Spline struct {
 	Rational              bool
 	Planar                bool
 	Linear                bool
-	Degree                int
+	Degree                int64
 	KnotTolerance         float64
 	ControlPointTolerance float64
 	FitTolerance          float64
@@ -104,7 +104,7 @@ func NewSpline(tags core.TagSlice) (*Spline, error) {
 		42: core.NewFloatTypeParserToVar(&spline.KnotTolerance),
 		43: core.NewFloatTypeParserToVar(&spline.ControlPointTolerance),
 		44: core.NewFloatTypeParserToVar(&spline.FitTolerance),
-		70: core.NewIntTypeParser(func(flags int) {
+		70: core.NewIntTypeParser(func(flags int64) {
 			spline.Closed = flags&closedSplineBit != 0
 			spline.Periodic = flags&periodicSplineBit != 0
 			spline.Rational = flags&rationalSplineBit != 0

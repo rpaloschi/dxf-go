@@ -13,8 +13,8 @@ type Insert struct {
 	ScaleFactorY       float64
 	ScaleFactorZ       float64
 	RotationAngle      float64
-	ColumnCount        int
-	RowCount           int
+	ColumnCount        int64
+	RowCount           int64
 	ColumnSpacing      float64
 	RowSpacing         float64
 	AttributesFollow   bool
@@ -82,7 +82,7 @@ func NewInsert(tags core.TagSlice) (*Insert, error) {
 		44: core.NewFloatTypeParserToVar(&insert.ColumnSpacing),
 		45: core.NewFloatTypeParserToVar(&insert.RowSpacing),
 		50: core.NewFloatTypeParserToVar(&insert.RotationAngle),
-		66: core.NewIntTypeParser(func(value int) {
+		66: core.NewIntTypeParser(func(value int64) {
 			insert.AttributesFollow = value == 1
 		}),
 		70:  core.NewIntTypeParserToVar(&insert.ColumnCount),

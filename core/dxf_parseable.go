@@ -13,7 +13,7 @@ type TypeParser interface {
 type SetStringFunc func(string)
 
 // SetIntFunc is a function that sets an integer value.
-type SetIntFunc func(int)
+type SetIntFunc func(int64)
 
 // SetFloatFunc is a function that sets a floating point value.
 type SetFloatFunc func(float64)
@@ -76,9 +76,9 @@ func NewIntTypeParser(setter SetIntFunc) *IntTypeParser {
 
 // NewIntTypeParserToVar creates a new IntTypeParser that sets the parsed
 // value to the value of the passed int pointer.
-func NewIntTypeParserToVar(variable *int) *IntTypeParser {
+func NewIntTypeParserToVar(variable *int64) *IntTypeParser {
 	parser := new(IntTypeParser)
-	parser.setter = func(value int) {
+	parser.setter = func(value int64) {
 		*variable = value
 	}
 	return parser

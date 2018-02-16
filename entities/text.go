@@ -89,14 +89,14 @@ func NewText(tags core.TagSlice) (*Text, error) {
 		41: core.NewFloatTypeParserToVar(&text.RelativeXScale),
 		50: core.NewFloatTypeParserToVar(&text.Rotation),
 		51: core.NewFloatTypeParserToVar(&text.ObliqueAngle),
-		71: core.NewIntTypeParser(func(flags int) {
+		71: core.NewIntTypeParser(func(flags int64) {
 			text.MirroredX = flags&backwardTextBit != 0
 			text.MirroredY = flags&upsideDownTextBit != 0
 		}),
-		72: core.NewIntTypeParser(func(value int) {
+		72: core.NewIntTypeParser(func(value int64) {
 			text.HorizontalJustification = HorizontalTextJustification(value)
 		}),
-		73: core.NewIntTypeParser(func(value int) {
+		73: core.NewIntTypeParser(func(value int64) {
 			text.VerticalJustification = VerticalTextJustification(value)
 		}),
 		11:  core.NewFloatTypeParserToVar(&text.SecondAlignmentPoint.X),
